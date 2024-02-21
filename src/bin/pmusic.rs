@@ -20,7 +20,7 @@ struct Opt {
     #[structopt(short, long, default_value = "10")]
     duration: u64,
     #[structopt(short, long)]
-    output_to_file: bool
+    file_out: bool
 }
 
 fn main() {
@@ -43,7 +43,7 @@ fn main() {
 
     let music = MelodyMusicMaker::new(opt.base_note, opt.scale, opt.octaves, opt.tempo);
 
-    if opt.output_to_file {
+    if opt.file_out {
         let filepath = "./output/output.wav";
         println!("Export to {}", filepath);
         controller.add(music.take_duration(Duration::from_secs(opt.duration)));
