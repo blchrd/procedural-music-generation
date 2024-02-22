@@ -76,6 +76,7 @@ impl Iterator for MelodyMusicMaker {
             self.current_sample = 0;
             self.new_note(); 
         }
+
         Some(value.sin())
     }
 }

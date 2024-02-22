@@ -1,6 +1,9 @@
 use std::time::{Duration, Instant};
 
-use pmusic::{chord_music_maker::ChordMusicMaker, melody_music_maker::MelodyMusicMaker, musictheory::{chord_progression::ChordProgression, piano_key::PianoKey, scale::Scale}};
+use pmusic::{
+    musicsource::{chord_music_maker::ChordMusicMaker, melody_music_maker::MelodyMusicMaker}, 
+    musictheory::{chord_progression::ChordProgression, piano_key::PianoKey, scale::Scale}
+};
 use rodio::{dynamic_mixer, OutputStream, Sink, Source};
 use structopt::StructOpt;
 
@@ -35,7 +38,7 @@ fn main() {
         let mut chord_base_note = opt.base_note;
         chord_base_note.octave -= 2;
         let chords = ChordMusicMaker::new(
-            ChordProgression::from_scale_and_str(opt.scale, chord_base_note, "I-V-vii-IV"), 
+            ChordProgression::from_scale_and_str(opt.scale, chord_base_note, "I-V-vi-IV"), 
             opt.tempo / 2
         );
         controller.add(chords.take_duration(Duration::from_secs(opt.duration)));
