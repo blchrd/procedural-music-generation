@@ -77,6 +77,11 @@ impl Iterator for MelodyMusicMaker {
             self.new_note(); 
         }
 
+        // SawWave
+        // Some(value.tan().recip().atan())
+        // SquareWave
+        // Some(value.sin().signum())
+        // SineWave
         Some(value.sin())
     }
 }
