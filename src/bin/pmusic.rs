@@ -41,7 +41,8 @@ fn main() {
             ChordProgression::from_scale_and_str(opt.scale, chord_base_note, "I-V-vi-IV"), 
             opt.tempo / 2
         );
-        controller.add(chords.take_duration(Duration::from_secs(opt.duration)));
+        // By removing the .amplify at the end, we can make the sound saturate
+        controller.add(chords.take_duration(Duration::from_secs(opt.duration)).amplify(0.2));
     }
 
     let music = MelodyMusicMaker::new(opt.base_note, opt.scale, opt.octaves, opt.tempo);
@@ -49,7 +50,7 @@ fn main() {
     if opt.file_out {
         let filepath = "./output/output.wav";
         println!("Export to {}", filepath);
-        controller.add(music.take_duration(Duration::from_secs(opt.duration)));
+        controller.add(music.take_duration(Duration::from_secs(opt.duration)).amplify(0.2));
         let head = wav_io::new_stereo_header();
         let mut file_out = std::fs::File::create(filepath).unwrap();
         wav_io::write_to_file(&mut file_out, &head, &mixer.convert_samples().into_iter().collect::<Vec<f32>>()).unwrap();
@@ -59,7 +60,7 @@ fn main() {
         println!("Execution took {} seconds.", elapsed_time.as_secs());
     } else {
         println!("{}", music);
-        controller.add(music.take_duration(Duration::from_secs(opt.duration)));
+        controller.add(music.take_duration(Duration::from_secs(opt.duration)).amplify(0.2));
         sink.append(mixer);
         sink.sleep_until_end();
     }
