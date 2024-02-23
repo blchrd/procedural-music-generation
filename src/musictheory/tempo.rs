@@ -14,7 +14,7 @@ impl From<u16> for Tempo {
 }
 
 impl Tempo {
-    pub fn get_bpm(self) -> f64 {
-        self.0 as f64 / 60.0
+    pub fn get_bps(self) -> f32 {
+        self.0 as f32 / 60.0
     }
 }

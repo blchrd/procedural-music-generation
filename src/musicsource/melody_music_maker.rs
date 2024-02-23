@@ -72,7 +72,7 @@ impl Iterator for MelodyMusicMaker {
             * self.current_sample as Sample
             / f64::from(self.sample_rate) as Sample;
 
-        if self.current_sample as f64 >= (f64::from(self.sample_rate) / self.tempo.get_bpm()) {
+        if self.current_sample as f64 >= (f64::from(self.sample_rate) / self.tempo.get_bps() as f64) {
             self.current_sample = 0;
             self.new_note(); 
         }

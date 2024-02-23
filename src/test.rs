@@ -4,7 +4,9 @@
 
 use std::str::FromStr;
 
-use crate::musictheory::{cent::Cent, char_strs, chord::{Chord, ChordInversion, ChordType}, chord_progression::ChordProgression, hertz::Hertz, interval::Interval, key::Key, mode::{Mode, PentatonicMode}, note::{self, Note, NoteLetter}, piano_key::PianoKey, pitch::{Pitch, C_ZERO, MIDDLE_C}, scale::Scale, semitone::Semitone};
+use crate::musictheory::{
+    cent::Cent, char_strs, chord::{Chord, ChordInversion, ChordType}, chord_progression::ChordProgression, hertz::Hertz, interval::Interval, key::Key, mode::{Mode, PentatonicMode}, note::{self, Note, NoteLetter}, note_value::{NoteValue, NoteValueBase, NoteValueDotted}, piano_key::PianoKey, pitch::{Pitch, C_ZERO, MIDDLE_C}, scale::Scale, semitone::Semitone, tempo::Tempo
+};
 
 #[test]
 fn test_substract_hertz() {
@@ -300,6 +302,14 @@ fn test_piano_key_to_pitch() {
 }
 
 #[test]
+fn test_tempo_bps() {
+    assert_eq!(Tempo::from(60).get_bps(), 1.0);
+    assert_eq!(Tempo::from(30).get_bps(), 0.5);
+    assert_eq!(Tempo::from(120).get_bps(), 2.0);
+    assert_eq!(Tempo::from(90).get_bps(), 1.5);
+}
+
+#[test]
 fn test_chord_interval() {
     use Interval::*;
     use ChordType::*;
@@ -395,4 +405,35 @@ fn test_chord_i_v_vi_iv_c_major_scale() {
         &ChordProgression::default().to_string(),
         "[ C4maj G4maj A4min F4maj ]"
     );
+}
+
+// Test for note value
+#[test]
+fn test_note_value_to_str() {
+    use NoteValueBase::*;
+    use NoteValueDotted::*;
+    assert_eq!(NoteValue::default().to_string(), "Quarter note");
+    assert_eq!(NoteValue{base: Whole, dotted: None}.to_string(), "Whole note");
+    assert_eq!(NoteValue{base: Half, dotted: Some(Dotted)}.to_string(), "Half dotted note");
+    assert_eq!(NoteValue{base: Eighth, dotted: Some(DoubleDotted)}.to_string(), "Eighth double dotted note");
+}
+
+#[test]
+fn test_note_value_relative_duration() {
+    use NoteValueBase::*;
+    use NoteValueDotted::*;
+    assert_eq!(NoteValue::default().get_relative_duration(), 0.25);
+    assert_eq!(NoteValue{base: Whole, dotted: None}.get_relative_duration(), 1.0);
+    assert_eq!(NoteValue{base: Half, dotted: Some(Dotted)}.get_relative_duration(), 0.75);
+    assert_eq!(NoteValue{base: Whole, dotted: Some(DoubleDotted)}.get_relative_duration(), 1.75);
+}
+
+#[test]
+fn test_note_value_duration_in_second() {
+    use NoteValueBase::*;
+    use NoteValueDotted::*;
+    assert_eq!(NoteValue::default().get_duration_for_tempo(Tempo::from(60)), 1.0);
+    assert_eq!(NoteValue::default().get_duration_for_tempo(Tempo::from(120)), 0.5);
+    assert_eq!(NoteValue{base: Half, dotted: None}.get_duration_for_tempo(Tempo::from(120)), 1.0);
+    assert_eq!(NoteValue{base: Whole, dotted: Some(Dotted)}.get_duration_for_tempo(Tempo::from(60)), 6.0);
 }

@@ -76,7 +76,7 @@ impl Iterator for ChordMusicMaker {
             sin += value.sin();
         });
 
-        if self.current_sample as f64 >= (f64::from(self.sample_rate) / self.tempo.get_bpm()) {
+        if self.current_sample as f64 >= (f64::from(self.sample_rate) / self.tempo.get_bps()  as f64) {
             self.current_sample = 0;
             self.next_chord();
         }
