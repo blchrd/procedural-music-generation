@@ -15,6 +15,7 @@ pub mod note_value;
 pub mod sheet_note;
 pub mod measure;
 pub mod sheet;
+pub mod time_signature;
 
 pub fn char_strs<'a>(s: &'a str) -> Vec<&'a str> {
     s.split("")

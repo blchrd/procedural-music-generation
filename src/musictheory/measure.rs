@@ -1,16 +1,25 @@
-use super::{note_value::NoteValue, piano_key::PianoKey, sheet_note::SheetNote};
+use super::{note_value::NoteValue, piano_key::PianoKey, sheet_note::SheetNote, time_signature::TimeSignature};
 
 #[derive(Debug, Clone)]
 pub struct Measure {
     pub notes: Vec<SheetNote>,
-    total_note_value: f32 //this will be the time signature at the end, it should work nice, because 3/4 is literally 0.75, we'll see
+    pub time_signature: TimeSignature //this will be the time signature at the end, it should work nice, because 3/4 is literally 0.75, we'll see
+}
+
+impl Default for Measure {
+    fn default() -> Self {
+        Measure {
+            notes: Vec::<SheetNote>::new(),
+            time_signature: TimeSignature::default()
+        }
+    }
 }
 
 impl Measure {
-    pub fn new() -> Self {
+    pub fn new(time_signature: TimeSignature) -> Self {
         Measure {
             notes: Vec::<SheetNote>::new(),
-            total_note_value: 1.0
+            time_signature: time_signature,
         }
     }
 
@@ -18,7 +27,7 @@ impl Measure {
         let mut note_values_sum = 0.0;
         self.notes.iter().for_each(|n| note_values_sum += n.value.get_relative_duration());
 
-        self.total_note_value - note_values_sum
+        f32::from(self.time_signature) - note_values_sum
     }
 
     pub fn is_measure_complete(&self) -> bool {

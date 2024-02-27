@@ -5,7 +5,7 @@
 use std::str::FromStr;
 
 use crate::musictheory::{
-    cent::Cent, char_strs, chord::{Chord, ChordInversion, ChordType}, chord_progression::ChordProgression, hertz::Hertz, interval::Interval, key::Key, measure::Measure, mode::{Mode, PentatonicMode}, note::{self, Note, NoteLetter}, note_value::{NoteValue, NoteValueBase, NoteValueDotted}, piano_key::PianoKey, pitch::{Pitch, C_ZERO, MIDDLE_C}, scale::Scale, semitone::Semitone, tempo::Tempo
+    cent::Cent, char_strs, chord::{Chord, ChordInversion, ChordType}, chord_progression::ChordProgression, hertz::Hertz, interval::Interval, key::Key, measure::Measure, mode::{Mode, PentatonicMode}, note::{self, Note, NoteLetter}, note_value::{NoteValue, NoteValueBase, NoteValueDotted}, piano_key::PianoKey, pitch::{Pitch, C_ZERO, MIDDLE_C}, scale::Scale, semitone::Semitone, tempo::Tempo, time_signature::TimeSignature
 };
 
 #[test]
@@ -439,10 +439,26 @@ fn test_note_value_duration_in_second() {
 }
 
 #[test]
+fn test_new_time_signature() {
+    assert_eq!(TimeSignature::default(), TimeSignature(1.0));
+    assert_eq!(TimeSignature::from_str("4/4").unwrap(), TimeSignature(1.0));
+    assert_eq!(TimeSignature::from_str("3/4").unwrap(), TimeSignature(0.75));
+    assert_eq!(TimeSignature::from_str("5/4").unwrap(), TimeSignature(1.25));
+    assert_eq!(TimeSignature::from_str("2/4").unwrap(), TimeSignature(0.5));
+    assert_eq!(TimeSignature::from_str("3/8").unwrap(), TimeSignature(0.375));
+}
+
+#[test]
+#[should_panic]
+fn test_new_incorrect_time_signature() {
+    assert_eq!(TimeSignature::from_str("4/0").unwrap(), TimeSignature::default())
+}
+
+#[test]
 fn test_measure_remaining_value() {
     use NoteValueBase::Half;
 
-    let mut measure = Measure::new();
+    let mut measure = Measure::new(TimeSignature::default());
     measure.add_note(PianoKey::default(), NoteValue::default());
     assert_eq!(measure.get_remaining_value(), 0.75);
 
@@ -453,7 +469,7 @@ fn test_measure_remaining_value() {
 #[test]
 fn test_measure_is_complete() {
     use NoteValueBase::Whole;
-    let mut measure = Measure::new();
+    let mut measure = Measure::new(TimeSignature::default());
     assert_eq!(measure.is_measure_complete(), false);
 
     measure.add_note(PianoKey::default(), NoteValue{base: Whole, dotted: None});
@@ -466,6 +482,6 @@ fn test_measure_add_note_over_total_duration() {
     use NoteValueBase::Whole;
     use NoteValueDotted::Dotted;
 
-    let mut measure = Measure::new();
+    let mut measure = Measure::new(TimeSignature::default());
     measure.add_note(PianoKey::default(), NoteValue{base: Whole, dotted: Some(Dotted)})
 }
