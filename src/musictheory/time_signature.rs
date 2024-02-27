@@ -57,6 +57,9 @@ impl fmt::Display for TimeSignature {
         if denominator == 1 {
             numerator *= 4;
             denominator *= 4
+        } else if denominator == 2 {
+            numerator *= 2;
+            denominator *= 2;
         }
 
         write!(

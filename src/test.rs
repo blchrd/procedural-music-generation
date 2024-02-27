@@ -465,6 +465,7 @@ fn test_time_signature_to_str() {
     assert_eq!(TimeSignature(0.75).to_string(), "3/4");
     assert_eq!(TimeSignature(0.375).to_string(), "3/8");
     assert_eq!(TimeSignature(1.0).to_string(), "4/4");
+    assert_eq!(TimeSignature(0.5).to_string(), "2/4")
 }
 
 #[test]
