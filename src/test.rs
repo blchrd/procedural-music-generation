@@ -455,6 +455,19 @@ fn test_new_incorrect_time_signature() {
 }
 
 #[test]
+#[should_panic]
+fn test_new_incorrect_time_signature_2() {
+    assert_eq!(TimeSignature::from_str("4/3").unwrap(), TimeSignature::default())
+}
+
+#[test]
+fn test_time_signature_to_str() {
+    assert_eq!(TimeSignature(0.75).to_string(), "3/4");
+    assert_eq!(TimeSignature(0.375).to_string(), "3/8");
+    assert_eq!(TimeSignature(1.0).to_string(), "4/4");
+}
+
+#[test]
 fn test_measure_remaining_value() {
     use NoteValueBase::Half;
 

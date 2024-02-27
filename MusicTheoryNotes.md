@@ -151,7 +151,7 @@ BPM is pretty easy to understand, 60 BPM is one beat per second, so a tempo of 1
 
 The time signature indicate the the number of note into a musical measure. For a 4/4 signature, the measure contains 4 beat, for 3/4, it contains 3 beats.
 
-y/x, x indicates the note value that the signature is counting. If it's 4, we counting quarter note, if it's eight, we couting eighth-note. While y indicate the number of note value the measure contains, by example, a 4/8 signature means we have 4 eighth-notes by measure.
+y/x, x indicates the note value that the signature is counting, it is always a power of 2. If it's 4, we counting quarter note, if it's eight, we couting eighth-note. While y indicate the number of note value the measure contains, by example, a 4/8 signature means we have 4 eighth-notes by measure.
 
 In the beginning, we'll use 4/4 signature.
 
