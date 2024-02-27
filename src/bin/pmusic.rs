@@ -47,8 +47,8 @@ fn main() {
         controller.add(chords.take_duration(Duration::from_secs(opt.duration)).amplify(amplify_value));
     }
 
-    let music = MelodyMusicMaker::new(opt.base_note, opt.scale, opt.octaves, opt.tempo);
-    // let music = SheetMusicMaker::new(sheet_generation(opt.base_note, opt.scale, opt.octaves), opt.tempo);
+    // let music = MelodyMusicMaker::new(opt.base_note, opt.scale, opt.octaves, opt.tempo);
+    let music = SheetMusicMaker::new(sheet_generation(opt.base_note, opt.scale, opt.octaves), opt.tempo);
 
     if opt.file_out {
         let filepath = "./output/output.wav";
