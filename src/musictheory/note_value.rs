@@ -1,5 +1,4 @@
 use core::fmt;
-
 use super::tempo::Tempo;
 
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
@@ -23,6 +22,25 @@ impl Default for NoteValueBase {
     }
 }
 
+impl fmt::Display for NoteValueBase {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        use NoteValueBase::*;
+        let note_value_str = match self {
+            Whole => "𝅝",
+            Half => "𝅗𝅥",
+            Quarter => "𝅘𝅥",
+            Eighth => "𝅘𝅥𝅮",
+            Sixteenth => "𝅘𝅥𝅯",
+        };
+
+        write!(
+            f,
+            "{}",
+            note_value_str
+        )
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub enum NoteValueDotted {
     Dotted=2,
@@ -34,9 +52,9 @@ impl fmt::Display for NoteValueDotted {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         use NoteValueDotted::*;
         let acc_str = match self {
-            Dotted => "dotted",
-            DoubleDotted => "double dotted",
-            TripleDotted => "triple dotted",
+            Dotted => ".",
+            DoubleDotted => "..",
+            TripleDotted => "...",
         };
         write!(f, "{}", acc_str)
     }
@@ -60,12 +78,12 @@ impl Default for NoteValue {
 impl fmt::Display for NoteValue {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let dotted_str = if let Some(d) = self.dotted {
-            format!(" {}", d)
+            format!("{}", d)
         } else {
             "".to_string()
         };
         
-        write!(f, "{:?}{} note", self.base, dotted_str)
+        write!(f, "{}{}", self.base, dotted_str)
     }
 }
 

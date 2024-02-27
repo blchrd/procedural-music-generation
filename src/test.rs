@@ -412,10 +412,10 @@ fn test_chord_i_v_vi_iv_c_major_scale() {
 fn test_note_value_to_str() {
     use NoteValueBase::*;
     use NoteValueDotted::*;
-    assert_eq!(NoteValue::default().to_string(), "Quarter note");
-    assert_eq!(NoteValue{base: Whole, dotted: None}.to_string(), "Whole note");
-    assert_eq!(NoteValue{base: Half, dotted: Some(Dotted)}.to_string(), "Half dotted note");
-    assert_eq!(NoteValue{base: Eighth, dotted: Some(DoubleDotted)}.to_string(), "Eighth double dotted note");
+    assert_eq!(NoteValue::default().to_string(), "𝅘𝅥");
+    assert_eq!(NoteValue{base: Whole, dotted: None}.to_string(), "𝅝");
+    assert_eq!(NoteValue{base: Half, dotted: Some(Dotted)}.to_string(), "𝅗𝅥.");
+    assert_eq!(NoteValue{base: Eighth, dotted: Some(DoubleDotted)}.to_string(), "𝅘𝅥𝅮..");
 }
 
 #[test]
