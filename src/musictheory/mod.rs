@@ -12,6 +12,9 @@ pub mod chord;
 pub mod tempo;
 pub mod chord_progression;
 pub mod note_value;
+pub mod sheet_note;
+pub mod measure;
+pub mod sheet;
 
 pub fn char_strs<'a>(s: &'a str) -> Vec<&'a str> {
     s.split("")

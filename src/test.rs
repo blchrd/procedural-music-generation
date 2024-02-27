@@ -5,7 +5,7 @@
 use std::str::FromStr;
 
 use crate::musictheory::{
-    cent::Cent, char_strs, chord::{Chord, ChordInversion, ChordType}, chord_progression::ChordProgression, hertz::Hertz, interval::Interval, key::Key, mode::{Mode, PentatonicMode}, note::{self, Note, NoteLetter}, note_value::{NoteValue, NoteValueBase, NoteValueDotted}, piano_key::PianoKey, pitch::{Pitch, C_ZERO, MIDDLE_C}, scale::Scale, semitone::Semitone, tempo::Tempo
+    cent::Cent, char_strs, chord::{Chord, ChordInversion, ChordType}, chord_progression::ChordProgression, hertz::Hertz, interval::Interval, key::Key, measure::Measure, mode::{Mode, PentatonicMode}, note::{self, Note, NoteLetter}, note_value::{NoteValue, NoteValueBase, NoteValueDotted}, piano_key::PianoKey, pitch::{Pitch, C_ZERO, MIDDLE_C}, scale::Scale, semitone::Semitone, tempo::Tempo
 };
 
 #[test]
@@ -436,4 +436,36 @@ fn test_note_value_duration_in_second() {
     assert_eq!(NoteValue::default().get_duration_for_tempo(Tempo::from(120)), 0.5);
     assert_eq!(NoteValue{base: Half, dotted: None}.get_duration_for_tempo(Tempo::from(120)), 1.0);
     assert_eq!(NoteValue{base: Whole, dotted: Some(Dotted)}.get_duration_for_tempo(Tempo::from(60)), 6.0);
+}
+
+#[test]
+fn test_measure_remaining_value() {
+    use NoteValueBase::Half;
+
+    let mut measure = Measure::new();
+    measure.add_note(PianoKey::default(), NoteValue::default());
+    assert_eq!(measure.get_remaining_value(), 0.75);
+
+    measure.add_note(PianoKey::default(), NoteValue{base: Half, dotted: None});
+    assert_eq!(measure.get_remaining_value(), 0.25);
+}
+
+#[test]
+fn test_measure_is_complete() {
+    use NoteValueBase::Whole;
+    let mut measure = Measure::new();
+    assert_eq!(measure.is_measure_complete(), false);
+
+    measure.add_note(PianoKey::default(), NoteValue{base: Whole, dotted: None});
+    assert_eq!(measure.is_measure_complete(), true);
+}
+
+#[test]
+#[should_panic]
+fn test_measure_add_note_over_total_duration() {
+    use NoteValueBase::Whole;
+    use NoteValueDotted::Dotted;
+
+    let mut measure = Measure::new();
+    measure.add_note(PianoKey::default(), NoteValue{base: Whole, dotted: Some(Dotted)})
 }
