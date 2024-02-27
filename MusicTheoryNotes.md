@@ -153,6 +153,8 @@ The time signature indicate the the number of note into a musical measure. For a
 
 y/x, x indicates the note value that the signature is counting, it is always a power of 2. If it's 4, we counting quarter note, if it's eight, we couting eighth-note. While y indicate the number of note value the measure contains, by example, a 4/8 signature means we have 4 eighth-notes by measure.
 
+We can have x being something else than a power of two, but in our case, we'll assume these time signatures are not valid.
+
 In the beginning, we'll use 4/4 signature.
 
 #### Common rhythm pattern
@@ -171,7 +173,7 @@ For 3/4 time signature:
 - 𝅘𝅥 𝅘𝅥𝅮 𝅘𝅥𝅮 𝅘𝅥𝅮 𝅘𝅥𝅮
 - 𝅘𝅥𝅮 𝅘𝅥𝅮 𝅘𝅥 𝅘𝅥𝅮 𝅘𝅥𝅮
 
-#### Note translation
+#### Note values
 
 * Whole note: ronde, 𝅝
 * Half note: blanche, 𝅗𝅥
@@ -182,4 +184,22 @@ For 3/4 time signature:
 * Sixty-fourth note: quadruple-croche, 𝅘𝅥𝅱
 * etc.
 
-A dotted note add 1/2 of the duration to the note.
+##### Dotted note
+
+A dotted note add 1/2 of the duration to the note. We can double or triple the dot.
+
+- Dotted note: +1/2 of the note duration
+- Double dotted note: +1/2 +1/4 of the note duration
+- Triple dotted note: +1/2 +1/4 +1/8 of the note duration
+
+I'm not sure we'll use something other than simple dotted note.
+
+##### Tuplets
+
+A tuplet is a rhythm that involve dividing the beat into a different number of equal subdivision.
+
+Meaning, by example: 1 quarter note can be divided into 2 eighth notes, or 4 sixteenth notes. But, if for any reason we want to divide this quarter note in 3, then we use a tuplet, here a triplet, and we have 3 triplets eighth notes, equivalent to 1 quarter note.
+
+The most tuplets I came across while composing music is triplet and sextuplet, but all the other division exist as well.
+
+I'm not sure we'll use this division of note, but it'll be implemented (at least, we'll have it if we need it).
