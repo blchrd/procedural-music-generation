@@ -155,15 +155,31 @@ y/x, x indicates the note value that the signature is counting. If it's 4, we co
 
 In the beginning, we'll use 4/4 signature.
 
+#### Common rhythm pattern
+
+For measure generation, here is the most common rhythm patterns, after implementing them, we can improve the generation.
+
+For 4/4 time signature:
+- 𝅘𝅥 𝅘𝅥 𝅘𝅥 𝅘𝅥𝅮 𝅘𝅥𝅮 (rock ballad type)
+- 𝅘𝅥𝅮 𝅘𝅥𝅮 𝅘𝅥𝅮 𝅘𝅥 𝅘𝅥𝅮 𝅘𝅥
+- 𝅘𝅥𝅮 𝅘𝅥 𝅘𝅥 𝅘𝅥𝅮 𝅘𝅥𝅮 𝅘𝅥𝅮
+- 𝅘𝅥𝅮 𝅘𝅥𝅮 𝅘𝅥𝅮 𝅘𝅥 𝅘𝅥𝅮 𝅘𝅥𝅮 𝅘𝅥𝅮
+- 𝅘𝅥 𝅘𝅥𝅮 𝅘𝅥 𝅘𝅥𝅮 𝅘𝅥𝅮 𝅘𝅥𝅮
+- 𝅘𝅥. 𝅘𝅥 𝅘𝅥𝅮 𝅘𝅥𝅮 𝅘𝅥𝅮
+
+For 3/4 time signature:
+- 𝅘𝅥 𝅘𝅥𝅮 𝅘𝅥𝅮 𝅘𝅥𝅮 𝅘𝅥𝅮
+- 𝅘𝅥𝅮 𝅘𝅥𝅮 𝅘𝅥 𝅘𝅥𝅮 𝅘𝅥𝅮
+
 #### Note translation
 
-* Whole note: ronde
-* Half note: blanche
-* Quarter note: noire
-* Eighth note: croche
-* Sixteenth note: double-croche
-* Thirty-second note: triple-croche
-* Sixty-fourth note: quadruple-croche
+* Whole note: ronde, 𝅝
+* Half note: blanche, 𝅗𝅥
+* Quarter note: noire, 𝅘𝅥
+* Eighth note: croche, 𝅘𝅥𝅮
+* Sixteenth note: double-croche, 𝅘𝅥𝅯
+* Thirty-second note: triple-croche, 𝅘𝅥𝅰
+* Sixty-fourth note: quadruple-croche, 𝅘𝅥𝅱
 * etc.
 
 A dotted note add 1/2 of the duration to the note.
