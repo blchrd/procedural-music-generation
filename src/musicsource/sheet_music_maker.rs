@@ -5,7 +5,7 @@ use rodio::Source;
 
 use crate::{f64_to_f32, musictheory::{hertz::Hertz, pitch::Pitch, sheet::Sheet, tempo::Tempo}};
 
-pub const SAMPLE_RATE: Hertz = Hertz(48_000.0);
+pub const SAMPLE_RATE: Hertz = Hertz(44_100.0);
 pub type Sample = f32;
 
 #[derive(Clone)]

@@ -34,7 +34,7 @@ fn main() {
     let opt = Opt::from_args();
     let amplify_value = 0.2;
 
-    let (controller, mixer) = dynamic_mixer::mixer::<f32>(2, 48_000);
+    let (controller, mixer) = dynamic_mixer::mixer::<f32>(2, 44_100);
     let (_stream, stream_handle) = OutputStream::try_default().unwrap();
     let sink = Sink::try_new(&stream_handle).unwrap();
 
