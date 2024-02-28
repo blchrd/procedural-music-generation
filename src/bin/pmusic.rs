@@ -5,6 +5,7 @@ use pmusic::{
     musicsource::{chord_music_maker::ChordMusicMaker, melody_music_maker::MelodyMusicMaker, sheet_music_maker::SheetMusicMaker}, 
     musictheory::{chord_progression::ChordProgression, piano_key::PianoKey, scale::Scale}
 };
+use rand::{rngs::SmallRng, seq::SliceRandom, SeedableRng};
 use rodio::{dynamic_mixer, OutputStream, Sink, Source};
 use structopt::StructOpt;
 
@@ -30,6 +31,7 @@ struct Opt {
 }
 
 fn main() {
+    let mut seed = SmallRng::from_entropy();
     let now = Instant::now();
     let opt = Opt::from_args();
     let amplify_value = 0.2;
@@ -41,9 +43,10 @@ fn main() {
     if opt.chord_mode {
         let mut chord_base_note = opt.base_note;
         chord_base_note.octave -= 2;
+        let chord_tempo = opt.tempo as f32 * vec![0.25, 0.5, 0.5, 1.0].choose(&mut seed).unwrap();
         let chords = ChordMusicMaker::new(
             ChordProgression::from_scale_and_str(opt.scale, chord_base_note, "I-V-vi-IV"), 
-            opt.tempo / 2
+            chord_tempo as u16,
         );
         // By removing the .amplify at the end, we can make the sound saturate
         controller.add(chords.take_duration(Duration::from_secs(opt.duration)).amplify(amplify_value));
