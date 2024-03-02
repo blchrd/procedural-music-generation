@@ -17,8 +17,10 @@ cargo run -- -h
 Here are the future feature I want to implement:
 - [ ] Barre chord?
 - [ ] Tempo modulation
-- [ ] Export to files
-- [ ] Syncopation and note duration
+- [x] Export to files
+- [x] Note duration
+- [ ] Implementation of silence
+- [ ] Syncopation
 - [ ] Create custom chord
 - [ ] Pattern generation (to make some kind of partition generation)
 - [ ] Check [this repository](https://github.com/andyherbert/ansiterm/tree/main/basic_waves/src) to implement different wave form.

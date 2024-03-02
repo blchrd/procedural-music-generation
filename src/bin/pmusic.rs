@@ -1,9 +1,9 @@
 use std::time::{Duration, Instant};
 
 use pmusic::{
-    musicgeneration::sheet_generator::sheet_generation, 
+    musicgeneration::{chord_progression_generator::chord_progression_generation, sheet_generator::sheet_generation}, 
     musicsource::{chord_music_maker::ChordMusicMaker, melody_music_maker::MelodyMusicMaker, sheet_music_maker::SheetMusicMaker}, 
-    musictheory::{chord_progression::ChordProgression, piano_key::PianoKey, scale::Scale}
+    musictheory::{chord_progression::ChordProgression, piano_key::PianoKey, scale::Scale, time_signature::TimeSignature}
 };
 use rand::{rngs::SmallRng, seq::SliceRandom, SeedableRng};
 use rodio::{dynamic_mixer, OutputStream, Sink, Source};
@@ -41,11 +41,12 @@ fn main() {
     let sink = Sink::try_new(&stream_handle).unwrap();
 
     if opt.chord_mode {
+        let chord_progression = chord_progression_generation(opt.scale, TimeSignature::default());
         let mut chord_base_note = opt.base_note;
         chord_base_note.octave -= 2;
         let chord_tempo = opt.tempo as f32 * vec![0.25, 0.5, 0.5, 1.0].choose(&mut seed).unwrap();
         let chords = ChordMusicMaker::new(
-            ChordProgression::from_scale_and_str(opt.scale, chord_base_note, "I-V-vi-IV"), 
+            ChordProgression::from_scale_and_str(opt.scale, chord_base_note, &chord_progression), 
             chord_tempo as u16,
         );
         // By removing the .amplify at the end, we can make the sound saturate
