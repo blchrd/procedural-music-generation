@@ -54,7 +54,7 @@ fn main() {
 
     // TODO: I have to refactor the code below
     if opt.sheet_mode {
-        let music = SheetMusicMaker::new(sheet_generation(opt.base_note, opt.scale, opt.octaves), opt.tempo);
+        let music = SheetMusicMaker::new(sheet_generation(opt.base_note, opt.scale, opt.octaves, 4), opt.tempo);
         if opt.file_out {
             let filepath = "./output/output.wav";
             println!("Export to {}", filepath);
