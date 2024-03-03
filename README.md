@@ -6,7 +6,7 @@ The core of the program is based on [this tutorial](https://dev.to/deciduously/t
 
 ## Quick start
 
-To do that, you'll need to install the Rust toolchains by following the instruction on the [official website](https://www.rust-lang.org/tools/install).
+To use it, you'll need to install the Rust toolchains by following the instruction on the [official website](https://www.rust-lang.org/tools/install).
 
 ```bash
 cargo run -- -h
