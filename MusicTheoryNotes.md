@@ -104,6 +104,8 @@ Power chord didn't really have notation here, I have to think about that during 
 
 Classic chord progression use diatonic scale (7 notes). For the major scales, it is straightforward, but a little tricky for minor scale (or at least, I didn't understand how it works).
 
+Disclaimer for musical theory purist: when I'll use `II` or `V` with pentatonic scale, it will use the second or fifth (in the example) degree of the pentatonic scale, not the degree of the original diatonic scale.
+
 | Mode       | Intervals and Chords |          |           |           |         |          |           |
 | ---------- | :------------------: | :------: | :-------: | :-------: | :-----: | :------: | :-------: |
 | Ionian     |          I           |    ii    |    iii    |    IV     |    V    |    vi    | vii (dim) |
@@ -114,8 +116,6 @@ Classic chord progression use diatonic scale (7 notes). For the major scales, it
 | Aeolian    |          i           | ii (dim) |   bIII    |    iv     |    v    |   bVI    |   bVII    |
 | Locrian    |       i (dim)        |   bII    |   biii    |    iv     |   bV    |   bVI    |   bvii    |
 
-For a major scale, the chord degrees are:
-
 - I (Tonic)
 - ii (Supertonic)
 - iii (Mediant)
@@ -124,15 +124,22 @@ For a major scale, the chord degrees are:
 - vi (Submediant)
 - vii° (Leading tone): Diminished chord
 
-For a minor scale, chord degrees are:
+Diatonic chord progression:
 
-- i
-- ii° ou ii (diminished or minor chord, depend on scale?)
-- III or ii (major or minor chord, depend on scale?)
-- iv
-- V or v (major or minor chord, depend on scale?)
-- VI or vi (major or minor chord, depend on scale?)
-- vii° or vii (diminished or minor, depend on scale?)
+- [Modal chord progression](https://www.fretjam.com/modal-chord-progressions.html)
+- [Chord progression cheat sheet](https://mastering.com/wp-content/uploads/2019/08/CHORD-PROGRESSION-Cheat-Sheet.pdf)
+- [Dorian chord progression](https://learningmusicskills.com/dorian-mode-chord-progressions/)
+- [Dorian chord progression 2](https://merelymusic.com/dorian-chord-progression/)
+- [Phrygian chord progression](https://thatguitarplayer.com/10-phrygian-chord-progressions-for-guitar/)
+- [Lydian chord progression](https://gearaficionado.com/blog/lydian-chord-progressions/)
+- [Mixolydian chord progression](https://www.secretsofsongwriting.com/2018/01/03/the-beauty-of-chord-progressions-in-the-mixolydian-mode/)
+- [Songs in the aeolian mode (with some chord progression in it)](https://hellomusictheory.com/learn/songs-in-the-aeolian-mode/)
+- [Locrian mode (with some chord progression)](https://themusicambition.com/locrian-mode/)
+
+Pentatonic chord progression:
+
+- [Chord progressions for pentatonic melodies](https://www.secretsofsongwriting.com/2018/07/09/chord-progressions-for-pentatonic-melodies/)
+- [Key and chord chart pentatonic](https://www.guitar-chord.org/key-and-chord-chart-pentatonic.html)
 
 ### Scales
 
