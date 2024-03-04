@@ -15,7 +15,7 @@ struct Opt {
     #[structopt(short, long)]
     chord_mode: bool,
     #[structopt(long)]
-    sheet_mode: bool,
+    random_mode: bool,
     #[structopt(short, long, default_value="C4")]
     base_note: PianoKey,
     #[structopt(short, long, default_value = "Ionian")]
@@ -54,8 +54,8 @@ fn main() {
     }
 
     // TODO: I have to refactor the code below
-    if opt.sheet_mode {
-        let music = SheetMusicMaker::new(sheet_generation(opt.base_note, opt.scale, opt.octaves, 4), opt.tempo);
+    if opt.random_mode {
+        let music = MelodyMusicMaker::new(opt.base_note, opt.scale, opt.octaves, opt.tempo);
         if opt.file_out {
             let filepath = "./output/output.wav";
             println!("Export to {}", filepath);
@@ -63,7 +63,7 @@ fn main() {
             let head = wav_io::new_stereo_header();
             let mut file_out = std::fs::File::create(filepath).unwrap();
             wav_io::write_to_file(&mut file_out, &head, &mixer.convert_samples().into_iter().collect::<Vec<f32>>()).unwrap();
-    
+
             // "benchmark"
             let elapsed_time = now.elapsed();
             println!("Execution took {} seconds.", elapsed_time.as_secs());
@@ -74,7 +74,7 @@ fn main() {
             sink.sleep_until_end();
         }
     } else {
-        let music = MelodyMusicMaker::new(opt.base_note, opt.scale, opt.octaves, opt.tempo);
+        let music = SheetMusicMaker::new(sheet_generation(opt.base_note, opt.scale, opt.octaves, 4), opt.tempo);
         if opt.file_out {
             let filepath = "./output/output.wav";
             println!("Export to {}", filepath);
@@ -82,7 +82,7 @@ fn main() {
             let head = wav_io::new_stereo_header();
             let mut file_out = std::fs::File::create(filepath).unwrap();
             wav_io::write_to_file(&mut file_out, &head, &mixer.convert_samples().into_iter().collect::<Vec<f32>>()).unwrap();
-
+    
             // "benchmark"
             let elapsed_time = now.elapsed();
             println!("Execution took {} seconds.", elapsed_time.as_secs());
