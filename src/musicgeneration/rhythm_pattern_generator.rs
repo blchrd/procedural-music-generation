@@ -4,6 +4,35 @@ use crate::musictheory::{
     time_signature::TimeSignature
 };
 
+pub fn rhythm_pattern_generation_for_chord(time_signature: TimeSignature) -> Vec<NoteValue> {
+    use NoteValueBase::{Whole, Half, Quarter};
+    use NoteValueDotted::Dotted;
+    let whole_note = NoteValue{base: Whole, dotted: None};
+    let half_note = NoteValue{base: Half, dotted: None};
+    let half_note_dotted = NoteValue{base: Half, dotted: Some(Dotted)};
+    let quarter_note = NoteValue{base: Quarter, dotted: None};
+
+    let mut seed = SmallRng::from_entropy();
+
+    let patterns_4_4 = vec![
+        vec![whole_note],
+        vec![half_note, half_note],
+        vec![whole_note, half_note, half_note],
+    ];
+    let patterns_3_4 = vec![
+        vec![half_note_dotted],
+        vec![half_note, quarter_note],
+    ];
+
+    if f32::from(time_signature) == 1.0 {
+        return patterns_4_4.iter().choose(&mut seed).unwrap().clone();
+    } else if f32::from(time_signature) == 0.75 {
+        return patterns_3_4.iter().choose(&mut seed).unwrap().clone();
+    }
+    
+    vec![]
+}
+
 pub fn rhythm_pattern_generation(time_signature: TimeSignature) -> Vec<NoteValue> {
     use NoteValueBase::{Quarter, Eighth};
     use NoteValueDotted::Dotted;

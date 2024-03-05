@@ -1,11 +1,10 @@
 use std::time::{Duration, Instant};
 
 use pmusic::{
-    musicgeneration::{chord_progression_generator::chord_progression_generation, sheet_generator::sheet_generation}, 
+    musicgeneration::{chord_progression_generator::chord_progression_generation, rhythm_pattern_generator::rhythm_pattern_generation_for_chord, sheet_generator::sheet_generation}, 
     musicsource::{chord_music_maker::ChordMusicMaker, melody_music_maker::MelodyMusicMaker, sheet_music_maker::SheetMusicMaker}, 
     musictheory::{chord_progression::ChordProgression, piano_key::PianoKey, scale::Scale, time_signature::TimeSignature}
 };
-use rand::{rngs::SmallRng, seq::SliceRandom, SeedableRng};
 use rodio::{dynamic_mixer, OutputStream, Sink, Source};
 use structopt::StructOpt;
 
@@ -31,7 +30,6 @@ struct Opt {
 }
 
 fn main() {
-    let mut seed = SmallRng::from_entropy();
     let now = Instant::now();
     let opt = Opt::from_args();
     let amplify_value = 0.2;
@@ -44,10 +42,10 @@ fn main() {
         let chord_progression = chord_progression_generation(opt.scale, TimeSignature::default());
         let mut chord_base_note = opt.base_note;
         chord_base_note.octave -= 2;
-        let chord_tempo = opt.tempo as f32 * vec![0.25, 0.5, 0.5, 1.0].choose(&mut seed).unwrap();
         let chords = ChordMusicMaker::new(
-            ChordProgression::from_scale_and_str(opt.scale, chord_base_note, &chord_progression), 
-            chord_tempo as u16,
+            ChordProgression::from_scale_and_str(opt.scale, chord_base_note, &chord_progression),
+            rhythm_pattern_generation_for_chord(TimeSignature::default()),
+            opt.tempo,
         );
         // By removing the .amplify at the end, we can make the sound saturate
         controller.add(chords.take_duration(Duration::from_secs(opt.duration)).amplify(amplify_value));

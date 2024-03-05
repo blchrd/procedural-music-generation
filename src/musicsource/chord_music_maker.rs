@@ -4,7 +4,7 @@ use std::{f32::consts::PI, time::Duration};
 
 use rodio::Source;
 
-use crate::{f64_to_f32, musictheory::{chord_progression::ChordProgression, hertz::Hertz, pitch::Pitch, tempo::Tempo}};
+use crate::{f64_to_f32, musictheory::{chord_progression::ChordProgression, hertz::Hertz, note_value::NoteValue, pitch::Pitch, tempo::Tempo}};
 
 pub const SAMPLE_RATE: Hertz = Hertz(44_100.0);
 pub type Sample = f32;
@@ -14,6 +14,8 @@ pub struct ChordMusicMaker {
     chord_progression: ChordProgression,
     current_chord: usize,
     current_sample: usize,
+    rhythm_pattern: Vec<NoteValue>,
+    current_note_value: usize,
     sample_rate: Hertz,
     tempo: Tempo,
     volume: f32,
@@ -25,6 +27,8 @@ impl Default for ChordMusicMaker {
             chord_progression: ChordProgression::default(),
             current_chord: 0,
             current_sample: usize::default(),
+            rhythm_pattern: Vec::<NoteValue>::default(),
+            current_note_value: usize::default(),
             sample_rate: SAMPLE_RATE,
             tempo: Tempo::from(60),
             volume: 2.0,
@@ -33,8 +37,11 @@ impl Default for ChordMusicMaker {
 }
 
 impl ChordMusicMaker {
-    pub fn new(chord_progression: ChordProgression, tempo: u16) -> Self {
-        Self::default().set_chord_progression(chord_progression).set_tempo(Tempo::from(tempo))
+    pub fn new(chord_progression: ChordProgression, rhythm_pattern: Vec<NoteValue>, tempo: u16) -> Self {
+        Self::default()
+            .set_chord_progression(chord_progression)
+            .set_rhythm_pattern(rhythm_pattern)
+            .set_tempo(Tempo::from(tempo))
     }
 
     fn next_chord(&mut self) {
@@ -42,10 +49,20 @@ impl ChordMusicMaker {
         if self.current_chord >= self.chord_progression.chords.len() {
             self.current_chord = 0;
         }
+
+        self.current_note_value += 1;
+        if self.current_note_value >= self.rhythm_pattern.len() {
+            self.current_note_value = 0;
+        }
     }
 
     fn set_chord_progression(mut self, chord_progression: ChordProgression) -> Self {
         self.chord_progression = chord_progression;
+        self
+    }
+
+    fn set_rhythm_pattern(mut self, rhythm_pattern: Vec<NoteValue>) -> Self {
+        self.rhythm_pattern = rhythm_pattern;
         self
     }
 
@@ -76,7 +93,7 @@ impl Iterator for ChordMusicMaker {
             sin += value.sin();
         });
 
-        if self.current_sample as f64 >= (f64::from(self.sample_rate) / self.tempo.get_bps()  as f64) {
+        if self.current_sample as f64 >= (f64::from(self.sample_rate) / (1.0 / self.rhythm_pattern[self.current_note_value].get_duration_for_tempo(self.tempo)) as f64) {
             self.current_sample = 0;
             self.next_chord();
         }
