@@ -33,20 +33,30 @@ fn main() {
     let now = Instant::now();
     let opt = Opt::from_args();
     let amplify_value = 0.2;
+    let mut nb_measures = 4;
 
     let (controller, mixer) = dynamic_mixer::mixer::<f32>(2, 44_100);
     let (_stream, stream_handle) = OutputStream::try_default().unwrap();
     let sink = Sink::try_new(&stream_handle).unwrap();
 
     if opt.chord_mode {
-        let chord_progression = chord_progression_generation(opt.scale, TimeSignature::default());
+        let time_signature = TimeSignature::default();
         let mut chord_base_note = opt.base_note;
         chord_base_note.octave -= 2;
+        let chord_progression = ChordProgression::from_scale_and_str(
+            opt.scale,
+            chord_base_note,
+            &chord_progression_generation(opt.scale, time_signature.clone())
+        );
+        let rhythm_pattern = rhythm_pattern_generation_for_chord(time_signature.clone());
         let chords = ChordMusicMaker::new(
-            ChordProgression::from_scale_and_str(opt.scale, chord_base_note, &chord_progression),
-            rhythm_pattern_generation_for_chord(TimeSignature::default()),
+            chord_progression.clone(),
+            rhythm_pattern.clone(),
             opt.tempo,
         );
+
+        nb_measures = chord_progression.clone().chords.len();
+
         // By removing the .amplify at the end, we can make the sound saturate
         controller.add(chords.take_duration(Duration::from_secs(opt.duration)).amplify(amplify_value));
     }
@@ -72,7 +82,7 @@ fn main() {
             sink.sleep_until_end();
         }
     } else {
-        let music = SheetMusicMaker::new(sheet_generation(opt.base_note, opt.scale, opt.octaves, 4), opt.tempo);
+        let music = SheetMusicMaker::new(sheet_generation(opt.base_note, opt.scale, opt.octaves, nb_measures as i32), opt.tempo);
         if opt.file_out {
             let filepath = "./output/output.wav";
             println!("Export to {}", filepath);

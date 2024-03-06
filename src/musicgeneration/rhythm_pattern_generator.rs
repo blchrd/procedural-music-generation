@@ -8,20 +8,20 @@ pub fn rhythm_pattern_generation_for_chord(time_signature: TimeSignature) -> Vec
     use NoteValueBase::{Whole, Half, Quarter};
     use NoteValueDotted::Dotted;
     let whole_note = NoteValue{base: Whole, dotted: None};
-    let half_note = NoteValue{base: Half, dotted: None};
+    let _half_note = NoteValue{base: Half, dotted: None};
     let half_note_dotted = NoteValue{base: Half, dotted: Some(Dotted)};
-    let quarter_note = NoteValue{base: Quarter, dotted: None};
+    let _quarter_note = NoteValue{base: Quarter, dotted: None};
 
     let mut seed = SmallRng::from_entropy();
 
     let patterns_4_4 = vec![
         vec![whole_note],
-        vec![half_note, half_note],
-        vec![whole_note, half_note, half_note],
+        // vec![_half_note, _half_note],
+        // vec![whole_note, _half_note, _half_note],
     ];
     let patterns_3_4 = vec![
         vec![half_note_dotted],
-        vec![half_note, quarter_note],
+        // vec![_half_note, _quarter_note],
     ];
 
     if f32::from(time_signature) == 1.0 {
