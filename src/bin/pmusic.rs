@@ -3,7 +3,7 @@ use std::time::{Duration, Instant};
 use pmusic::{
     musicgeneration::{chord_progression_generator::chord_progression_generation, rhythm_pattern_generator::rhythm_pattern_generation_for_chord, sheet_generator::sheet_generation}, 
     musicsource::{chord_music_maker::ChordMusicMaker, sheet_music_maker::SheetMusicMaker}, 
-    musictheory::{chord_progression::ChordProgression, piano_key::PianoKey, scale::Scale, time_signature::TimeSignature}
+    musictheory::{chord_progression::ChordProgression, key::Key, piano_key::PianoKey, scale::Scale, time_signature::TimeSignature}
 };
 use rodio::{dynamic_mixer, OutputStream, Sink, Source};
 use structopt::StructOpt;
@@ -37,6 +37,8 @@ fn main() {
     let (_stream, stream_handle) = OutputStream::try_default().unwrap();
     let sink = Sink::try_new(&stream_handle).unwrap();
 
+    println!("Scale: {} {} {}", opt.base_note, opt.scale, Key::new(opt.scale, opt.base_note, opt.octaves));
+
     if opt.chord_mode {
         let time_signature = TimeSignature::default();
         let mut chord_base_note = opt.base_note;
@@ -54,6 +56,7 @@ fn main() {
         );
 
         nb_measures = chord_progression.clone().chords.len();
+        println!("Chord progression: {}", chord_progression);
 
         // By removing the .amplify at the end, we can make the sound saturate
         controller.add(chords.take_duration(Duration::from_secs(opt.duration)).amplify(amplify_value));

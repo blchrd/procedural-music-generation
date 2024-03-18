@@ -7,6 +7,7 @@ use super::{chord::{Chord, ChordType}, key::Key, piano_key::PianoKey, scale::Sca
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct ChordProgression {
+    pub progression: String,
     pub chords: Vec<Chord>
 }
 
@@ -26,7 +27,7 @@ impl ChordProgression {
         use ChordInversion::Root;
 
         let notes = Key::new(scale, base_note, 1).all_keys();
-        let mut ret = Self{chords: Vec::<Chord>::new()};
+        let mut ret = Self{progression: s.to_string(), chords: Vec::<Chord>::new()};
 
         s.split('-').into_iter().for_each(|chord_str| {
             //1. check if chord degree is minor or major (with lowercase)
@@ -56,9 +57,12 @@ impl ChordProgression {
 
 impl fmt::Display for ChordProgression {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut ret = String::from("[ ");
+        let mut ret;
+        ret = String::from("[ ");
         self.chords.iter().for_each(|c| ret.push_str(&format!("{} ", *c)));
         ret.push_str("]");
+        
+        ret = format!("{} ({})", self.progression.clone(), ret);
 
         write!(f, "{}", ret)
     }

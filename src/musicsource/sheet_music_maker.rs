@@ -114,7 +114,8 @@ impl fmt::Display for SheetMusicMaker {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
-            "Generating from sheet {}",
+            "Generating from sheet {:?}\n{}",
+            self.tempo,
             self.sheet
         )
     }

@@ -1,3 +1,5 @@
+use core::fmt;
+
 use super::{note_value::NoteValue, piano_key::PianoKey, sheet_note::SheetNote, time_signature::TimeSignature};
 
 #[derive(Debug, Clone)]
@@ -39,5 +41,16 @@ impl Measure {
             panic!("Measure overflow")
         }
         self.notes.push(SheetNote {note, value});
+    }
+}
+
+impl fmt::Display for Measure {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let mut ret = String::new();
+        self.notes.iter().for_each(|sn| {
+            ret.push_str(&format!("{} ", *sn))
+        });
+
+        write!(f, "{}", ret)
     }
 }

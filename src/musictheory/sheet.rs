@@ -21,9 +21,15 @@ impl Sheet {
 
 impl fmt::Display for Sheet {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let mut ret = String::new();
+        self.measures.iter().for_each(|m| {
+            ret.push_str(&format!("{} \n", *m))
+        });
+
         write!(
             f,
-            "(display for sheet is not implemented yet)"
+            "{}",
+            ret
         )
     }
 }
