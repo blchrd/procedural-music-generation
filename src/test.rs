@@ -403,8 +403,16 @@ fn test_c4_augmented_second_inversion() {
 fn test_chord_i_v_vi_iv_c_major_scale() {
     assert_eq!(
         &ChordProgression::default().to_string(),
-        "[ C4maj G4maj A4min F4maj ]"
+        "I-V-vi-IV ([ C4maj G4maj A4min F4maj ])"
     );
+}
+
+#[test]
+fn test_chord_i_ii_iii7_viidim_viidim7_c_major_scale() {
+    assert_eq!(
+        &ChordProgression::from_scale_and_str(Scale::default(), PianoKey::from_str("C4").unwrap(), "I-ii6-iii7-vii°-vii°7").to_string(),
+        "I-ii6-iii7-vii°-vii°7 ([ C4maj D4min6 E4min7 B4dim B4dim7 ])"
+    )
 }
 
 // Test for note value

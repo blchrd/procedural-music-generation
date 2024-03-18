@@ -36,18 +36,18 @@ pub fn chord_progression_generation(scale: Scale, _time_signature: TimeSignature
                     "II-i",
                     "i-II-i",
                     "i-vii",
-                    "i-v", //TODO: it's v°
-                    "i-v-II-i", //TODO: it's v°
+                    "i-v°",
+                    "i-v°-II-i",
                     "i-iv-II-i",
                     "i-VI-II",
                     "i-vii-II-i",
                     "ii-II-III-II",
                 ],
                 Lydian => vec![
-                    "iii-IV-V", //TODO: it's IV°
+                    "iii-IV°-V",
                     "I-II",
                     "I-II-vii-vi",
-                    "I-IV-ii-V", //TODO: it's IV°
+                    "I-IV°-ii-V",
                     "I-V-II",
                     "vi-V-I-II",
                 ],

@@ -23,33 +23,51 @@ impl Default for ChordProgression {
 
 impl ChordProgression {
     pub fn from_scale_and_str(scale: Scale, base_note: PianoKey, s: &str) -> Self {
-        use ChordType::{MajorTriad, MinorTriad, DiminishedTriad};
         use ChordInversion::Root;
 
         let notes = Key::new(scale, base_note, 1).all_keys();
         let mut ret = Self{progression: s.to_string(), chords: Vec::<Chord>::new()};
 
         s.split('-').into_iter().for_each(|chord_str| {
-            //1. check if chord degree is minor or major (with lowercase)
-            let chord_type: ChordType;
+            //1. check chord type (upper or lowercase and last characters)
+            let mut chord_type_str: String;
+            let mut chord_degree: String = chord_str.to_string();
+            let last_char = chord_str.chars().nth_back(0).unwrap();
+            let second_last_char = chord_str.chars().nth_back(1);
+
             if chord_str.to_uppercase() == chord_str {
-                chord_type = MajorTriad;
+                chord_type_str = String::from("maj");
             } else {
                 if chord_str == "vii" {
-                    chord_type = DiminishedTriad;
+                    chord_type_str = String::from("min");
                 } else {
-                    chord_type = MinorTriad;
+                    chord_type_str = String::from("min");
                 }
             }
 
+            if last_char == '°' {
+                chord_type_str = String::from("dim");
+                chord_degree = chord_degree.replace('°', "");
+            } else if last_char.is_digit(10) {
+                if second_last_char.is_some() {
+                    if second_last_char.unwrap() == '°' {
+                        chord_type_str = String::from("dim");
+                        chord_degree = chord_degree.replace('°', "");
+                    }
+                }
+                
+                chord_type_str.push_str(&last_char.to_string());
+                chord_degree = chord_degree.replace(last_char, "");
+            }
+
             //2. convert roman number
-            let degree = roman::from(&chord_str.to_uppercase()).unwrap() as usize;
+            let degree = roman::from(&chord_degree.to_uppercase()).unwrap() as usize;
 
             //3. get the base note of the chord
             let base_note = notes[degree - 1];
 
             //4. construct the chord (for now, we just use major and minor triad (or diminished for the seventh degrees))
-            ret.chords.push(Chord{base_note, chord_type, inversion: Root});
+            ret.chords.push(Chord{base_note, chord_type: ChordType::from_str(&chord_type_str).unwrap(), inversion: Root});
         });
         ret
     }
