@@ -63,6 +63,7 @@ fn main() {
     }
 
     let music = SheetMusicMaker::new(sheet_generation(opt.base_note, opt.scale, opt.octaves, nb_measures as i32), opt.tempo);
+    println!("{}", music);
     if opt.file_out {
         let filepath = "./output/output.wav";
         println!("Export to {}", filepath);
@@ -75,7 +76,6 @@ fn main() {
         let elapsed_time = now.elapsed();
         println!("Execution took {} seconds.", elapsed_time.as_secs());
     } else {
-        println!("{}", music);
         controller.add(music.take_duration(Duration::from_secs(opt.duration)).amplify(amplify_value));
         sink.append(mixer);
         sink.sleep_until_end();
