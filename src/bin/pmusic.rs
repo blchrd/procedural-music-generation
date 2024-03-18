@@ -2,7 +2,7 @@ use std::time::{Duration, Instant};
 
 use pmusic::{
     musicgeneration::{chord_progression_generator::chord_progression_generation, rhythm_pattern_generator::rhythm_pattern_generation_for_chord, sheet_generator::sheet_generation}, 
-    musicsource::{chord_music_maker::ChordMusicMaker, melody_music_maker::MelodyMusicMaker, sheet_music_maker::SheetMusicMaker}, 
+    musicsource::{chord_music_maker::ChordMusicMaker, sheet_music_maker::SheetMusicMaker}, 
     musictheory::{chord_progression::ChordProgression, piano_key::PianoKey, scale::Scale, time_signature::TimeSignature}
 };
 use rodio::{dynamic_mixer, OutputStream, Sink, Source};
@@ -13,8 +13,6 @@ use structopt::StructOpt;
 struct Opt {
     #[structopt(short, long)]
     chord_mode: bool,
-    #[structopt(long)]
-    random_mode: bool,
     #[structopt(short, long, default_value="C4")]
     base_note: PianoKey,
     #[structopt(short, long, default_value = "Ionian")]
@@ -61,45 +59,22 @@ fn main() {
         controller.add(chords.take_duration(Duration::from_secs(opt.duration)).amplify(amplify_value));
     }
 
-    // TODO: I have to refactor the code below
-    if opt.random_mode {
-        let music = MelodyMusicMaker::new(opt.base_note, opt.scale, opt.octaves, opt.tempo);
-        if opt.file_out {
-            let filepath = "./output/output.wav";
-            println!("Export to {}", filepath);
-            controller.add(music.take_duration(Duration::from_secs(opt.duration)).amplify(amplify_value));
-            let head = wav_io::new_stereo_header();
-            let mut file_out = std::fs::File::create(filepath).unwrap();
-            wav_io::write_to_file(&mut file_out, &head, &mixer.convert_samples().into_iter().collect::<Vec<f32>>()).unwrap();
+    let music = SheetMusicMaker::new(sheet_generation(opt.base_note, opt.scale, opt.octaves, nb_measures as i32), opt.tempo);
+    if opt.file_out {
+        let filepath = "./output/output.wav";
+        println!("Export to {}", filepath);
+        controller.add(music.take_duration(Duration::from_secs(opt.duration)).amplify(amplify_value));
+        let head = wav_io::new_stereo_header();
+        let mut file_out = std::fs::File::create(filepath).unwrap();
+        wav_io::write_to_file(&mut file_out, &head, &mixer.convert_samples().into_iter().collect::<Vec<f32>>()).unwrap();
 
-            // "benchmark"
-            let elapsed_time = now.elapsed();
-            println!("Execution took {} seconds.", elapsed_time.as_secs());
-        } else {
-            println!("{}", music);
-            controller.add(music.take_duration(Duration::from_secs(opt.duration)).amplify(amplify_value));
-            sink.append(mixer);
-            sink.sleep_until_end();
-        }
+        // "benchmark"
+        let elapsed_time = now.elapsed();
+        println!("Execution took {} seconds.", elapsed_time.as_secs());
     } else {
-        let music = SheetMusicMaker::new(sheet_generation(opt.base_note, opt.scale, opt.octaves, nb_measures as i32), opt.tempo);
-        if opt.file_out {
-            let filepath = "./output/output.wav";
-            println!("Export to {}", filepath);
-            controller.add(music.take_duration(Duration::from_secs(opt.duration)).amplify(amplify_value));
-            let head = wav_io::new_stereo_header();
-            let mut file_out = std::fs::File::create(filepath).unwrap();
-            wav_io::write_to_file(&mut file_out, &head, &mixer.convert_samples().into_iter().collect::<Vec<f32>>()).unwrap();
-    
-            // "benchmark"
-            let elapsed_time = now.elapsed();
-            println!("Execution took {} seconds.", elapsed_time.as_secs());
-        } else {
-            println!("{}", music);
-            controller.add(music.take_duration(Duration::from_secs(opt.duration)).amplify(amplify_value));
-            sink.append(mixer);
-            sink.sleep_until_end();
-        }
-    }
-    
+        println!("{}", music);
+        controller.add(music.take_duration(Duration::from_secs(opt.duration)).amplify(amplify_value));
+        sink.append(mixer);
+        sink.sleep_until_end();
+    }    
 }
