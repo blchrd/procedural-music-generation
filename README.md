@@ -14,13 +14,12 @@ cargo run -- -h
 
 ## Future feature
 
-Here are the future feature I want to implement:
-- [ ] Barre chord?
-- [ ] Tempo modulation
-- [x] Export to files
-- [x] Note duration
-- [ ] Implementation of silence
-- [ ] Syncopation
-- [ ] Create custom chord
+Here are the future feature I want to (or try to) implement:
 - [ ] Pattern generation (to make some kind of partition generation)
+- [ ] Seed the RNG
+- [ ] Sound envelopes ([short post about it](https://www.teachmeaudio.com/recording/sound-reproduction/sound-envelopes))
+- [ ] Silence
+- [ ] Syncopation
+- [ ] Tempo modulation
+- [ ] Create custom chord
 - [ ] Check [this repository](https://github.com/andyherbert/ansiterm/tree/main/basic_waves/src) to implement different wave form.
