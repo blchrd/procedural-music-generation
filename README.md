@@ -15,9 +15,9 @@ cargo run -- -h
 ## Future feature
 
 Here are the future feature I want to (or try to) implement:
-- [ ] Pattern generation (to make some kind of partition generation)
-- [ ] Seed the RNG
+- [ ] Merge the chord progression into pattern
 - [ ] Sound envelopes ([short post about it](https://www.teachmeaudio.com/recording/sound-reproduction/sound-envelopes))
+- [ ] Seed the RNG
 - [ ] Silence
 - [ ] Syncopation
 - [ ] Tempo modulation
