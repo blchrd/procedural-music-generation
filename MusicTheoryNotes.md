@@ -237,3 +237,7 @@ I'm not sure we'll use this division of note, but it'll be implemented (at least
 ### Representation
 
 Usual representation is just the time of each phases. We can add the amplitude for attack and sustain (target amplitude for attack, amplitude for sustain).
+
+### Warning
+
+I think for the tempo to be ok in the sheet, we have to sync the end of the attack, and not the beginning of the note. It's not that much of a problem with a very short attack.

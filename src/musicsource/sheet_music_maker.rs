@@ -3,7 +3,15 @@ use core::{fmt, time::Duration};
 
 use rodio::Source;
 
-use crate::{f64_to_f32, musictheory::{hertz::Hertz, pitch::Pitch, sheet::Sheet, tempo::Tempo}};
+use crate::{
+    f64_to_f32, 
+    musictheory::{
+        hertz::Hertz, 
+        pitch::Pitch, 
+        sheet::Sheet, 
+        tempo::Tempo
+    }, 
+    signal::adsr_envelop::AdsrEnvelop};
 
 pub const SAMPLE_RATE: Hertz = Hertz(44_100.0);
 pub type Sample = f32;
@@ -15,6 +23,7 @@ pub struct SheetMusicMaker {
     current_measure: usize,
     current_pattern: usize,
     current_sample: usize,
+    adsr_envelop: AdsrEnvelop,
     sample_rate: Hertz,
     tempo: Tempo,
     volume: f32,
@@ -28,6 +37,7 @@ impl Default for SheetMusicMaker {
             current_measure: 0,
             current_pattern: 0,
             current_sample: usize::default(),
+            adsr_envelop: AdsrEnvelop::default(),
             sample_rate: SAMPLE_RATE,
             tempo: Tempo::from(60),
             volume: 2.0,
@@ -38,6 +48,10 @@ impl Default for SheetMusicMaker {
 impl SheetMusicMaker {
     pub fn new(sheet: Sheet, tempo: u16) -> Self {
         Self::default().set_sheet(sheet).set_tempo(Tempo::from(tempo))
+    }
+    pub fn set_adsr_envelop(mut self, adsr_envelop: AdsrEnvelop) -> Self {
+        self.adsr_envelop = adsr_envelop;
+        self
     }
     fn get_frequency(&mut self) -> Sample {
         let current_sheet_note = self.sheet.patterns[self.current_pattern].measures[self.current_measure].notes[self.current_note];
@@ -75,7 +89,12 @@ impl Iterator for SheetMusicMaker {
         self.current_sample = self.current_sample.wrapping_add(1); // will cycle
         let current_sheet_note = self.sheet.patterns[self.current_pattern].measures[self.current_measure].notes[self.current_note];
 
-        let value = self.volume
+        // To implement ADSR envelop, the only parameter we have to change here is the volume
+        // base on the time elapsed since the beginning of the note
+        // Or at least I thought so, the decay and release doesn't work properly
+        let amplitude = self.adsr_envelop.get_amplitude_for_sample(self.current_sample as f64, self.sample_rate);
+
+        let value = (self.volume * amplitude)
             * PI
             * self.get_frequency()
             * self.current_sample as Sample

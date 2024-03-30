@@ -3,7 +3,7 @@ use std::time::{Duration, Instant};
 use pmusic::{
     musicgeneration::{chord_progression_generator::chord_progression_generation, rhythm_pattern_generator::rhythm_pattern_generation_for_chord, sheet_generator::sheet_generation}, 
     musicsource::{chord_music_maker::ChordMusicMaker, sheet_music_maker::SheetMusicMaker}, 
-    musictheory::{chord_progression::ChordProgression, key::Key, piano_key::PianoKey, scale::Scale, time_signature::TimeSignature}
+    musictheory::{chord_progression::ChordProgression, key::Key, piano_key::PianoKey, scale::Scale, time_signature::TimeSignature}, signal::adsr_envelop::AdsrEnvelop
 };
 use rodio::{dynamic_mixer, OutputStream, Sink, Source};
 use structopt::StructOpt;
@@ -62,7 +62,9 @@ fn main() {
         controller.add(chords.take_duration(Duration::from_secs(opt.duration)).amplify(amplify_value));
     }
 
-    let music = SheetMusicMaker::new(sheet_generation(opt.base_note, opt.scale, opt.octaves, nb_measures as i32), opt.tempo);
+    let music = SheetMusicMaker::new(sheet_generation(opt.base_note, opt.scale, opt.octaves, nb_measures as i32), opt.tempo)
+                                    // .set_adsr_envelop(AdsrEnvelop::new(0.0, 0.0, 1.0, 1.0));
+                                    .set_adsr_envelop(AdsrEnvelop::default());
     println!("{}", music);
     if opt.file_out {
         let filepath = "./output/output.wav";

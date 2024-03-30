@@ -1,6 +1,7 @@
 pub mod musicsource;
 pub mod musictheory;
 pub mod musicgeneration;
+pub mod signal;
 
 #[cfg(test)]
 mod test;
