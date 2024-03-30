@@ -20,8 +20,13 @@ pub fn sheet_generation(base_note: PianoKey, scale: Scale, octaves: u8, nb_measu
     for _ in 0..nb_measures {
         let rhythm_pattern = rhythm_pattern_generation(TimeSignature::default());
         let mut measure = Measure::new(TimeSignature::default());
+        let mut prev_note: Option<PianoKey> = None;
         rhythm_pattern.iter().for_each(|value| {
-            let note = *keys.iter().choose(&mut seed).unwrap();
+            let mut note = *keys.iter().choose(&mut seed).unwrap();
+            while prev_note.is_some() && note == prev_note.unwrap() {
+                note = *keys.iter().choose(&mut seed).unwrap();
+            }
+            prev_note = Some(note.clone());
             measure.add_note(note, *value);
         });
         sheet.add_measure(measure);
