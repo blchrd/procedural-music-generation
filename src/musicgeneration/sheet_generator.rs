@@ -1,36 +1,27 @@
 use rand::{rngs::SmallRng, seq::IteratorRandom, SeedableRng};
 
 use crate::musictheory::{
-    key::Key, 
-    measure::Measure, 
+    pattern::Pattern, 
     piano_key::PianoKey, 
     scale::Scale, 
-    sheet::Sheet, 
-    time_signature::TimeSignature
+    sheet::Sheet 
 };
 
-use super::rhythm_pattern_generator::rhythm_pattern_generation;
+use super::pattern_generator::pattern_generation;
 
 pub fn sheet_generation(base_note: PianoKey, scale: Scale, octaves: u8, nb_measures: i32) -> Sheet {
-    let mut sheet = Sheet::new();
-    
+    let mut sheet = Sheet::new();  
     let mut seed = SmallRng::from_entropy();
-    let keys = Key::new(scale, base_note, octaves).all_keys();
+    let mut patterns = Vec::<Pattern>::new();
+    let nb_pattern = (1..4).into_iter().choose(&mut seed).unwrap();
 
-    for _ in 0..nb_measures {
-        let rhythm_pattern = rhythm_pattern_generation(TimeSignature::default());
-        let mut measure = Measure::new(TimeSignature::default());
-        let mut prev_note: Option<PianoKey> = None;
-        rhythm_pattern.iter().for_each(|value| {
-            let mut note = *keys.iter().choose(&mut seed).unwrap();
-            while prev_note.is_some() && note == prev_note.unwrap() {
-                note = *keys.iter().choose(&mut seed).unwrap();
-            }
-            prev_note = Some(note.clone());
-            measure.add_note(note, *value);
-        });
-        sheet.add_measure(measure);
+    for i in 0..nb_pattern {
+        patterns.push(pattern_generation(String::from(format!("Pattern {}", i)), base_note, scale, octaves, nb_measures))
     }
+
+    for _ in 0..nb_pattern*4 {
+        sheet.add_pattern(patterns.iter().choose(&mut seed).unwrap().clone())
+    }    
 
     sheet
 }

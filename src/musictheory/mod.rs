@@ -14,6 +14,7 @@ pub mod chord_progression;
 pub mod note_value;
 pub mod sheet_note;
 pub mod measure;
+pub mod pattern;
 pub mod sheet;
 pub mod time_signature;
 

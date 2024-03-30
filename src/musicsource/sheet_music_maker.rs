@@ -13,6 +13,7 @@ pub struct SheetMusicMaker {
     sheet: Sheet,
     current_note: usize,
     current_measure: usize,
+    current_pattern: usize,
     current_sample: usize,
     sample_rate: Hertz,
     tempo: Tempo,
@@ -25,6 +26,7 @@ impl Default for SheetMusicMaker {
             sheet: Sheet::new(),
             current_note: 0,
             current_measure: 0,
+            current_pattern: 0,
             current_sample: usize::default(),
             sample_rate: SAMPLE_RATE,
             tempo: Tempo::from(60),
@@ -38,17 +40,22 @@ impl SheetMusicMaker {
         Self::default().set_sheet(sheet).set_tempo(Tempo::from(tempo))
     }
     fn get_frequency(&mut self) -> Sample {
-        let current_sheet_note = self.sheet.measures[self.current_measure].notes[self.current_note];
+        let current_sheet_note = self.sheet.patterns[self.current_pattern].measures[self.current_measure].notes[self.current_note];
         let pitch = Pitch::from(current_sheet_note.note);
         f64_to_f32(pitch.into())
     }
     fn next_note(&mut self) {
         self.current_note += 1;
-        if self.current_note >= self.sheet.measures[self.current_measure].notes.len() {
+        if self.current_note >= self.sheet.patterns[self.current_pattern].measures[self.current_measure].notes.len() {
             self.current_measure += 1;
             self.current_note = 0;
-            if self.current_measure >= self.sheet.measures.len() {
-                self.current_measure = 0
+            if self.current_measure >= self.sheet.patterns[self.current_pattern].measures.len() {
+                self.current_pattern += 1;
+                self.current_measure = 0;
+                if self.current_pattern >= self.sheet.patterns.len() {
+                    //Stop the generation at this point?
+                    self.current_pattern = 0;
+                }
             }
         }
     }
@@ -66,7 +73,7 @@ impl Iterator for SheetMusicMaker {
     type Item = Sample; // Sampled amplitude
     fn next(&mut self) -> Option<Self::Item> {
         self.current_sample = self.current_sample.wrapping_add(1); // will cycle
-        let current_sheet_note = self.sheet.measures[self.current_measure].notes[self.current_note];
+        let current_sheet_note = self.sheet.patterns[self.current_pattern].measures[self.current_measure].notes[self.current_note];
 
         let value = self.volume
             * PI

@@ -1,28 +1,28 @@
 use core::fmt;
 
-use crate::musictheory::measure::Measure;
+use super::pattern::Pattern;
 
 #[derive(Debug, Clone)]
 pub struct Sheet {
-    pub measures: Vec<Measure>
+    pub patterns: Vec<Pattern>
 }
 
 impl Sheet {
     pub fn new() -> Self {
         Sheet {
-            measures: Vec::<Measure>::new()
+            patterns: Vec::<Pattern>::new()
         }
     }
 
-    pub fn add_measure(&mut self, measure: Measure) {
-        self.measures.push(measure);
+    pub fn add_pattern(&mut self, pattern: Pattern) {
+        self.patterns.push(pattern);
     }
 }
 
 impl fmt::Display for Sheet {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let mut ret = String::new();
-        self.measures.iter().for_each(|m| {
+        self.patterns.iter().for_each(|m| {
             ret.push_str(&format!("{} \n", *m))
         });
 
