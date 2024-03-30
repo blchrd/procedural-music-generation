@@ -224,3 +224,16 @@ Meaning, by example: 1 quarter note can be divided into 2 eighth notes, or 4 six
 The most tuplets I came across while composing music is triplet and sextuplet, but all the other division exist as well.
 
 I'm not sure we'll use this division of note, but it'll be implemented (at least, we'll have it if we need it).
+
+## ADSR Envelopes
+
+### Phases
+
+1. Attack: initial build up of the sound, from 0 to the maximum amplitude
+2. Decay: After reaching the attack, the signal level drops unti it reaches the sustain level
+3. Sustain: The signal level during the sustain is constant, many instrument do not contain a sustain phase
+4. Release: The final phase of the sound, drop from the sustain level to zero.
+
+### Representation
+
+Usual representation is just the time of each phases. We can add the amplitude for attack and sustain (target amplitude for attack, amplitude for sustain).
