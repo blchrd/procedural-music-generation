@@ -26,6 +26,7 @@ pub struct SheetMusicMaker {
     adsr_envelop: AdsrEnvelop,
     sample_rate: Hertz,
     tempo: Tempo,
+    instrument_debug: bool,
     volume: f32,
 }
 
@@ -40,14 +41,18 @@ impl Default for SheetMusicMaker {
             adsr_envelop: AdsrEnvelop::default(),
             sample_rate: SAMPLE_RATE,
             tempo: Tempo::from(60),
+            instrument_debug: false,
             volume: 2.0,
         }
     }
 }
 
 impl SheetMusicMaker {
-    pub fn new(sheet: Sheet, tempo: u16) -> Self {
-        Self::default().set_sheet(sheet).set_tempo(Tempo::from(tempo))
+    pub fn new(sheet: Sheet, tempo: u16, inst_debug: bool) -> Self {
+        Self::default()
+            .set_sheet(sheet)
+            .set_tempo(Tempo::from(tempo))
+            .set_instrument_debug(inst_debug)
     }
     pub fn set_adsr_envelop(mut self, adsr_envelop: AdsrEnvelop) -> Self {
         self.adsr_envelop = adsr_envelop;
@@ -81,6 +86,10 @@ impl SheetMusicMaker {
         self.tempo = tempo;
         self
     }
+    fn set_instrument_debug(mut self, inst_debug: bool) -> Self {
+        self.instrument_debug = inst_debug;
+        self
+    }
 }
 
 impl Iterator for SheetMusicMaker {
@@ -105,12 +114,15 @@ impl Iterator for SheetMusicMaker {
             self.next_note(); 
         }
 
-        // SawWave
-        // Some(value.tan().recip().atan())
         // SquareWave
-        // Some(value.sin().signum())
-        // SineWave
-        Some(value.sin())
+        // Some(value.sin().signum());
+        if self.instrument_debug {
+            // SawWave
+            Some(value.tan().recip().atan())
+        } else {
+            // SineWave
+            Some(value.sin())
+        }
     }
 }
 

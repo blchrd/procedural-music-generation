@@ -24,13 +24,20 @@ struct Opt {
     #[structopt(short, long, default_value = "10")]
     duration: u64,
     #[structopt(short, long)]
-    file_out: bool
+    file_out: bool,
+    #[structopt(short, long)]
+    instrument_debug: bool,
 }
 
 fn main() {
     let now = Instant::now();
     let opt = Opt::from_args();
-    let amplify_value = 0.2;
+    let amplify_value;
+    if opt.instrument_debug {
+        amplify_value = 0.1;
+    } else {
+        amplify_value = 0.2;
+    }
     let mut nb_measures = 4;
 
     let (controller, mixer) = dynamic_mixer::mixer::<f32>(2, 44_100);
@@ -42,7 +49,7 @@ fn main() {
     if opt.chord_mode {
         let time_signature = TimeSignature::default();
         let mut chord_base_note = opt.base_note;
-        chord_base_note.octave -= 2;
+        chord_base_note.octave = 2;
         let chord_progression = ChordProgression::from_scale_and_str(
             opt.scale,
             chord_base_note,
@@ -53,18 +60,27 @@ fn main() {
             chord_progression.clone(),
             rhythm_pattern.clone(),
             opt.tempo,
+            opt.instrument_debug,
         );
 
         nb_measures = chord_progression.clone().chords.len();
         println!("Chord progression: {}", chord_progression);
 
         // By removing the .amplify at the end, we can make the sound saturate
-        controller.add(chords.take_duration(Duration::from_secs(opt.duration)).amplify(amplify_value));
+        controller.add(chords.take_duration(Duration::from_secs(opt.duration)).amplify(amplify_value - 0.05));
     }
 
-    let music = SheetMusicMaker::new(sheet_generation(opt.base_note, opt.scale, opt.octaves, nb_measures as i32), opt.tempo)
-                                    // .set_adsr_envelop(AdsrEnvelop::new(0.0, 0.0, 1.0, 1.0));
-                                    .set_adsr_envelop(AdsrEnvelop::default());
+    let music = SheetMusicMaker::new(
+        sheet_generation(
+            opt.base_note, 
+            opt.scale, 
+            opt.octaves, 
+            nb_measures as i32
+        ), 
+        opt.tempo, 
+        opt.instrument_debug)
+                // .set_adsr_envelop(AdsrEnvelop::new(0.0, 0.0, 1.0, 1.0));
+                .set_adsr_envelop(AdsrEnvelop::default());
     println!("{}", music);
     if opt.file_out {
         let filepath = "./output/output.wav";

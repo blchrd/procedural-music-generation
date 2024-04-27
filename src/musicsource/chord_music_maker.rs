@@ -18,6 +18,7 @@ pub struct ChordMusicMaker {
     current_note_value: usize,
     sample_rate: Hertz,
     tempo: Tempo,
+    instrument_debug: bool,
     volume: f32,
 }
 
@@ -31,17 +32,19 @@ impl Default for ChordMusicMaker {
             current_note_value: usize::default(),
             sample_rate: SAMPLE_RATE,
             tempo: Tempo::from(60),
+            instrument_debug: false,
             volume: 2.0,
         }
     }
 }
 
 impl ChordMusicMaker {
-    pub fn new(chord_progression: ChordProgression, rhythm_pattern: Vec<NoteValue>, tempo: u16) -> Self {
+    pub fn new(chord_progression: ChordProgression, rhythm_pattern: Vec<NoteValue>, tempo: u16, inst_debug: bool) -> Self {
         Self::default()
             .set_chord_progression(chord_progression)
             .set_rhythm_pattern(rhythm_pattern)
             .set_tempo(Tempo::from(tempo))
+            .set_instrument_debug(inst_debug)
     }
 
     fn next_chord(&mut self) {
@@ -70,6 +73,11 @@ impl ChordMusicMaker {
         self.tempo = tempo;
         self
     }
+
+    fn set_instrument_debug(mut self, inst_debug: bool) -> Self {
+        self.instrument_debug = inst_debug;
+        self
+    }
 }
 
 impl Iterator for ChordMusicMaker {
@@ -90,7 +98,13 @@ impl Iterator for ChordMusicMaker {
                 * self.current_sample as Sample
                 / f64::from(self.sample_rate) as Sample;
 
-            sin += value.sin();
+            if self.instrument_debug {
+                // SquareWave
+                sin += value.sin().signum();
+            } else {
+                // SineWave
+                sin += value.sin();
+            }
         });
 
         if self.current_sample as f64 >= (f64::from(self.sample_rate) / (1.0 / self.rhythm_pattern[self.current_note_value].get_duration_for_tempo(self.tempo)) as f64) {
