@@ -507,3 +507,13 @@ fn test_measure_add_note_over_total_duration() {
     let mut measure = Measure::new(TimeSignature::default());
     measure.add_note(PianoKey::default(), NoteValue{base: Whole, dotted: Some(Dotted)})
 }
+
+#[test]
+fn test_piano_key_get_distance() {
+    assert_eq!(PianoKey::from_str("C4").unwrap().get_distance(PianoKey::from_str("B3").unwrap()), 1);
+    assert_eq!(PianoKey::from_str("C4").unwrap().get_distance(PianoKey::from_str("C#4").unwrap()), 1);
+    assert_eq!(PianoKey::from_str("C#4").unwrap().get_distance(PianoKey::from_str("D5").unwrap()), 13);
+    assert_eq!(PianoKey::from_str("D5").unwrap().get_distance(PianoKey::from_str("C#4").unwrap()), 13);
+    assert_eq!(PianoKey::from_str("A#3").unwrap().get_distance(PianoKey::from_str("C4").unwrap()), 2);
+    assert_eq!(PianoKey::from_str("F#4").unwrap().get_distance(PianoKey::from_str("A5").unwrap()), 15);
+}

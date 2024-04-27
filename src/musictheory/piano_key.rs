@@ -94,5 +94,41 @@ impl PianoKey {
                 self.note.accidental = Some(Sharp);
             }
         }
-    } 
+    }
+
+    pub fn get_distance(&self, piano_key: PianoKey) -> i32 {
+        let from_note: PianoKey;
+        let to_note: PianoKey;
+
+        if self.octave != piano_key.octave {
+            if self.octave > piano_key.octave {
+                from_note = piano_key;
+                to_note = self.clone();
+            } else {
+                from_note = self.clone();
+                to_note = piano_key;
+            }
+        } else {
+            let self_distance_from_c = self.note.interval_from_c() as i32;
+            let other_distance_from_c = piano_key.note.interval_from_c() as i32;
+            let distance_between_note = self_distance_from_c - other_distance_from_c;
+    
+            if distance_between_note > 0 {
+                from_note = piano_key;
+                to_note = self.clone();
+            } else {
+                from_note = self.clone();
+                to_note = piano_key;
+            }
+        }
+
+        let mut distance = 0;
+        let mut temp_note = from_note.clone();
+        while temp_note != to_note {
+            temp_note.inc();
+            distance += 1;
+        }
+
+        return distance;
+    }
 }
