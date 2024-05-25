@@ -1,5 +1,9 @@
-use core::fmt;
+//TODO: Change the sustain behavior, we just want it to sustain until the note is released
+//  It's not a fixed duration like the way it's implemented here.
+//  Same thing with the "attack" formula, we want it to start from any volume, it's not always start at 0
+//  These adjustements will make the global sound more organic.
 
+use core::fmt;
 use crate::{f64_to_f32, musictheory::hertz::Hertz};
 
 #[derive(Debug, Clone, Copy)]
