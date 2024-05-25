@@ -98,12 +98,7 @@ impl Iterator for SheetMusicMaker {
         self.current_sample = self.current_sample.wrapping_add(1); // will cycle
         let current_sheet_note = self.sheet.patterns[self.current_pattern].measures[self.current_measure].notes[self.current_note];
 
-        // To implement ADSR envelop, the only parameter we have to change here is the volume
-        // base on the time elapsed since the beginning of the note
-        // Or at least I thought so, the decay and release doesn't work properly
-        let amplitude = self.adsr_envelop.get_amplitude_for_sample(self.current_sample as f64, self.sample_rate);
-
-        let value = (self.volume * amplitude)
+        let value = (self.volume)
             * PI
             * self.get_frequency()
             * self.current_sample as Sample
@@ -114,6 +109,8 @@ impl Iterator for SheetMusicMaker {
             self.next_note(); 
         }
 
+        // Apply the adsr envelope
+        let amplitude = self.adsr_envelop.get_amplitude_for_sample(self.current_sample as f64, self.sample_rate);
         // SquareWave
         // Some(value.sin().signum());
         if self.instrument_debug {
@@ -121,7 +118,7 @@ impl Iterator for SheetMusicMaker {
             Some(value.tan().recip().atan())
         } else {
             // SineWave
-            Some(value.sin())
+            Some(amplitude * value.sin())
         }
     }
 }

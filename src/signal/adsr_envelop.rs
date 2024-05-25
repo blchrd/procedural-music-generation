@@ -67,23 +67,25 @@ impl AdsrEnvelop {
     }
 
     pub fn get_amplitude_for_sample(&self, sample: f64, sample_rate: Hertz) -> f32 {
-        let attack_max_level = 0.0;
+        let base_amplitude: f32 = 1.0;
+        let attack_max_level = 0.5;
         let amplitude: f32;
         let current_note_duration = sample as f32 / f64_to_f32(f64::from(sample_rate));
         if (sample) < (f64::from(sample_rate) / (1.0 / self.get_decay_start() as f64)) {
             // Attack
-            amplitude = current_note_duration * (1.0 + attack_max_level);
+            let slope = (base_amplitude + attack_max_level) / self.get_decay_start();
+            amplitude = current_note_duration * slope;
         } else if (sample) < (f64::from(sample_rate) / (1.0 / self.get_sustain_start() as f64)) {
             // Decay
-            let slope = -attack_max_level / self.get_sustain_start() - self.get_decay_start();
-            amplitude = ((current_note_duration - self.get_decay_start()) + (1.0 + attack_max_level)) * slope;
+            let slope = -attack_max_level / (self.get_sustain_start() - self.get_decay_start());
+            amplitude = (current_note_duration - self.get_decay_start()) * slope + (base_amplitude + attack_max_level);
         } else if (sample) < (f64::from(sample_rate) / (1.0 / self.get_release_start() as f64)) {
             // Sustain
-            amplitude = 1.0;
+            amplitude = base_amplitude;
         } else if (sample) < (f64::from(sample_rate) / (1.0 / self.get_note_duration() as f64)) {
             // Release
-            let slope = -1.0 / (self.get_note_duration() - self.get_release_start());
-            amplitude = ((current_note_duration - self.get_release_start()) + 1.0) * slope;
+            let slope = -base_amplitude / (self.get_note_duration() - self.get_release_start());
+            amplitude = ((current_note_duration - self.get_release_start())) * slope + base_amplitude;
         } else {
             amplitude = 0.0;
         }

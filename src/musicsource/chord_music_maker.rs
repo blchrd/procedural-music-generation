@@ -4,7 +4,7 @@ use std::{f32::consts::PI, time::Duration};
 
 use rodio::Source;
 
-use crate::{f64_to_f32, musictheory::{chord_progression::ChordProgression, hertz::Hertz, note_value::NoteValue, pitch::Pitch, tempo::Tempo}};
+use crate::{f64_to_f32, musictheory::{chord_progression::ChordProgression, hertz::Hertz, note_value::NoteValue, pitch::Pitch, tempo::Tempo}, signal::adsr_envelop::AdsrEnvelop};
 
 pub const SAMPLE_RATE: Hertz = Hertz(44_100.0);
 pub type Sample = f32;
@@ -14,6 +14,7 @@ pub struct ChordMusicMaker {
     chord_progression: ChordProgression,
     current_chord: usize,
     current_sample: usize,
+    adsr_envelop: AdsrEnvelop,
     rhythm_pattern: Vec<NoteValue>,
     current_note_value: usize,
     sample_rate: Hertz,
@@ -28,6 +29,7 @@ impl Default for ChordMusicMaker {
             chord_progression: ChordProgression::default(),
             current_chord: 0,
             current_sample: usize::default(),
+            adsr_envelop: AdsrEnvelop::default(),
             rhythm_pattern: Vec::<NoteValue>::default(),
             current_note_value: usize::default(),
             sample_rate: SAMPLE_RATE,
@@ -46,7 +48,10 @@ impl ChordMusicMaker {
             .set_tempo(Tempo::from(tempo))
             .set_instrument_debug(inst_debug)
     }
-
+    pub fn set_adsr_envelop(mut self, adsr_envelop: AdsrEnvelop) -> Self {
+        self.adsr_envelop = adsr_envelop;
+        self
+    }
     fn next_chord(&mut self) {
         self.current_chord += 1;
         if self.current_chord >= self.chord_progression.chords.len() {
@@ -98,12 +103,14 @@ impl Iterator for ChordMusicMaker {
                 * self.current_sample as Sample
                 / f64::from(self.sample_rate) as Sample;
 
+            // Apply the adsr envelope
+            let amplitude = self.adsr_envelop.get_amplitude_for_sample(self.current_sample as f64, self.sample_rate);
             if self.instrument_debug {
                 // SquareWave
                 sin += value.sin().signum();
             } else {
                 // SineWave
-                sin += value.sin();
+                sin += amplitude * value.sin();
             }
         });
 
