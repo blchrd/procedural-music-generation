@@ -11,6 +11,7 @@ use structopt::StructOpt;
 #[derive(StructOpt, Debug)]
 #[structopt(name = "pmusic")]
 struct Opt {
+    /// Add chord progression in addition of the melody
     #[structopt(short, long)]
     chord_mode: bool,
     #[structopt(short, long, default_value="C4")]
@@ -23,10 +24,14 @@ struct Opt {
     tempo: u16,
     #[structopt(short, long, default_value = "10")]
     duration: u64,
+    /// Instead of playing the track, output the result in ./output/output.wav
     #[structopt(short, long)]
     file_out: bool,
     #[structopt(short, long)]
     instrument_debug: bool,
+    /// Will pick a rhythm in a short list of common rhythm pattern
+    #[structopt(short, long)]
+    use_common_pattern: bool,
 }
 
 fn main() {
@@ -77,7 +82,8 @@ fn main() {
             opt.base_note, 
             opt.scale, 
             opt.octaves, 
-            nb_measures as i32
+            nb_measures as i32,
+            opt.use_common_pattern
         ), 
         opt.tempo, 
         opt.instrument_debug)

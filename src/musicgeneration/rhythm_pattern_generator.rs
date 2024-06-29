@@ -4,28 +4,26 @@ use crate::musictheory::{
     time_signature::TimeSignature
 };
 
-//TODO: Make the rhythm generation more random than now
-//  Split the signature, and use the same note value in each (or just randomize it completely)
-//  Keep the common pattern choice in it.
+//TODO: Split the signature, and use the same note value in each (or just randomize it completely)
 
 pub fn rhythm_pattern_generation_for_chord(time_signature: TimeSignature) -> Vec<NoteValue> {
     use NoteValueBase::{Whole, Half, Quarter};
     use NoteValueDotted::Dotted;
-    let whole_note = NoteValue{base: Whole, dotted: None};
+    let _whole_note = NoteValue{base: Whole, dotted: None};
     let _half_note = NoteValue{base: Half, dotted: None};
-    let half_note_dotted = NoteValue{base: Half, dotted: Some(Dotted)};
+    let _half_note_dotted = NoteValue{base: Half, dotted: Some(Dotted)};
     let _quarter_note = NoteValue{base: Quarter, dotted: None};
 
     let mut seed = SmallRng::from_entropy();
 
     let patterns_4_4 = vec![
-        vec![whole_note],
-        // vec![_half_note, _half_note],
-        // vec![whole_note, _half_note, _half_note],
+        vec![_whole_note],
+        vec![_half_note, _half_note],
+        vec![_whole_note, _half_note, _half_note],
     ];
     let patterns_3_4 = vec![
-        vec![half_note_dotted],
-        // vec![_half_note, _quarter_note],
+        vec![_half_note_dotted],
+        vec![_half_note, _quarter_note],
     ];
 
     if f32::from(time_signature) == 1.0 {
@@ -35,6 +33,51 @@ pub fn rhythm_pattern_generation_for_chord(time_signature: TimeSignature) -> Vec
     }
     
     vec![]
+}
+
+pub fn rhythm_pattern_rand_generation(time_signature: TimeSignature) -> Vec<NoteValue> {
+    let mut seed = SmallRng::from_entropy();
+
+    // Put the same value multiple time to weight the RNG
+    let note_values: Vec<NoteValue> = vec![
+        NoteValue{base: NoteValueBase::Whole, dotted: None},
+        NoteValue{base: NoteValueBase::Half, dotted: None},
+        NoteValue{base: NoteValueBase::Half, dotted: None},
+        NoteValue{base: NoteValueBase::Quarter, dotted: None},
+        NoteValue{base: NoteValueBase::Quarter, dotted: None},
+        NoteValue{base: NoteValueBase::Quarter, dotted: None},
+        NoteValue{base: NoteValueBase::Eighth, dotted: None},
+        NoteValue{base: NoteValueBase::Eighth, dotted: None},
+        NoteValue{base: NoteValueBase::Eighth, dotted: None},
+        NoteValue{base: NoteValueBase::Eighth, dotted: None},
+        NoteValue{base: NoteValueBase::Sixteenth, dotted: None},
+        NoteValue{base: NoteValueBase::Sixteenth, dotted: None},
+        NoteValue{base: NoteValueBase::Sixteenth, dotted: None},
+        NoteValue{base: NoteValueBase::Sixteenth, dotted: None},
+        NoteValue{base: NoteValueBase::Sixteenth, dotted: None},
+        NoteValue{base: NoteValueBase::Sixteenth, dotted: None},
+        // TODO: Add some dotted note (for uneven time signature)
+        // NoteValue{base: NoteValueBase::Whole, dotted: Some(NoteValueDotted::Dotted)},
+        // NoteValue{base: NoteValueBase::Half, dotted: Some(NoteValueDotted::Dotted)},
+        // NoteValue{base: NoteValueBase::Quarter, dotted: Some(NoteValueDotted::Dotted)},
+        // NoteValue{base: NoteValueBase::Eighth, dotted: Some(NoteValueDotted::Dotted)},
+        // NoteValue{base: NoteValueBase::Sixteenth, dotted: Some(NoteValueDotted::Dotted)},
+    ];
+
+    
+    let mut rhythm_pattern:Vec<NoteValue> = vec![];
+    let mut rhythm_pattern_sum = 0.0;
+    while rhythm_pattern_sum < f32::from(time_signature) {
+        let mut picked_note_value = note_values.iter().choose(&mut seed).unwrap();
+        while rhythm_pattern_sum + picked_note_value.get_relative_duration() > f32::from(time_signature) {
+            picked_note_value = note_values.iter().choose(&mut seed).unwrap();
+        }
+
+        rhythm_pattern.push(picked_note_value.clone());
+        rhythm_pattern_sum = rhythm_pattern.iter().fold(0.0, |sum, nv| sum + nv.get_relative_duration());
+    }
+
+    rhythm_pattern
 }
 
 pub fn rhythm_pattern_generation(time_signature: TimeSignature) -> Vec<NoteValue> {

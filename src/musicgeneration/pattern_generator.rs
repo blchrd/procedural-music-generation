@@ -1,5 +1,6 @@
 use rand::{rngs::SmallRng, seq::IteratorRandom, SeedableRng};
 
+use crate::musictheory::note_value::NoteValue;
 use crate::musictheory::{
     key::Key, 
     measure::Measure, 
@@ -15,8 +16,9 @@ use crate::musictheory::{
 //  but if we have a whole note, we can extend it
 
 use super::rhythm_pattern_generator::rhythm_pattern_generation;
+use super::rhythm_pattern_generator::rhythm_pattern_rand_generation;
 
-pub fn pattern_generation(name: String, base_note: PianoKey, scale: Scale, octaves: u8, nb_measures: i32) -> Pattern {
+pub fn pattern_generation(name: String, base_note: PianoKey, scale: Scale, octaves: u8, nb_measures: i32, use_common_pattern: bool) -> Pattern {
     let mut pattern = Pattern::new(name);
     let max_distance = 5;
     let max_distance_between_measures = 14;
@@ -26,7 +28,12 @@ pub fn pattern_generation(name: String, base_note: PianoKey, scale: Scale, octav
     let mut measure_last_note: Option<PianoKey> = None;
 
     for _ in 0..nb_measures {
-        let rhythm_pattern = rhythm_pattern_generation(TimeSignature::default());
+        let rhythm_pattern: Vec<NoteValue>;
+        if use_common_pattern {
+            rhythm_pattern = rhythm_pattern_generation(TimeSignature::default());
+        } else {
+            rhythm_pattern = rhythm_pattern_rand_generation(TimeSignature::default());
+        }
         let mut measure = Measure::new(TimeSignature::default());
         let mut prev_note: Option<PianoKey> = None;
         rhythm_pattern.iter().for_each(|value| {

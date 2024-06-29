@@ -4,8 +4,17 @@
 
 use std::str::FromStr;
 
-use crate::musictheory::{
-    cent::Cent, char_strs, chord::{Chord, ChordInversion, ChordType}, chord_progression::ChordProgression, hertz::Hertz, interval::Interval, key::Key, measure::Measure, mode::{Mode, PentatonicMode}, note::{self, Note, NoteLetter}, note_value::{NoteValue, NoteValueBase, NoteValueDotted}, piano_key::PianoKey, pitch::{Pitch, C_ZERO, MIDDLE_C}, scale::Scale, semitone::Semitone, tempo::Tempo, time_signature::TimeSignature
+use crate::{
+    musicgeneration::rhythm_pattern_generator, 
+    musictheory::{
+        cent::Cent, 
+        char_strs, 
+        chord::{Chord, ChordInversion, ChordType}, 
+        chord_progression::ChordProgression, hertz::Hertz, interval::Interval, key::Key, measure::Measure, 
+        mode::{Mode, PentatonicMode}, note::{self, Note, NoteLetter}, note_value::{NoteValue, NoteValueBase, NoteValueDotted}, 
+        piano_key::PianoKey, pitch::{Pitch, C_ZERO, MIDDLE_C}, scale::Scale, semitone::Semitone, tempo::Tempo, 
+        time_signature::TimeSignature
+    }
 };
 
 #[test]
@@ -496,6 +505,17 @@ fn test_measure_is_complete() {
 
     measure.add_note(PianoKey::default(), NoteValue{base: Whole, dotted: None});
     assert_eq!(measure.is_measure_complete(), true);
+}
+
+#[test]
+fn test_rand_pattern_generation() {
+    use rhythm_pattern_generator::rhythm_pattern_rand_generation;
+
+    let rhythm_pattern = rhythm_pattern_rand_generation(TimeSignature::default());
+    assert_eq!(
+        rhythm_pattern.iter().fold(0.0, |sum, nv| sum + nv.get_relative_duration()), 
+        f32::from(TimeSignature::default())
+    )
 }
 
 #[test]
