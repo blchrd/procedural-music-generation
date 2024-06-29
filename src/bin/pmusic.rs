@@ -1,7 +1,12 @@
 use std::time::{Duration, Instant};
 
 use pmusic::{
-    musicgeneration::{chord_progression_generator::chord_progression_generation, rhythm_pattern_generator::rhythm_pattern_generation_for_chord, sheet_generator::sheet_generation}, 
+    musicgeneration::{
+        random_scale::{get_random_base_note, get_random_scale},
+        chord_progression_generator::chord_progression_generation, 
+        rhythm_pattern_generator::rhythm_pattern_generation_for_chord, 
+        sheet_generator::sheet_generation
+    }, 
     musicsource::{chord_music_maker::ChordMusicMaker, sheet_music_maker::SheetMusicMaker}, 
     musictheory::{chord_progression::ChordProgression, key::Key, piano_key::PianoKey, scale::Scale, time_signature::TimeSignature}, signal::adsr_envelop::AdsrEnvelop
 };
@@ -32,6 +37,9 @@ struct Opt {
     /// Will pick a rhythm in a short list of common rhythm pattern
     #[structopt(short, long)]
     use_common_pattern: bool,
+    /// Randomize scale and base note (on the fourth octave)
+    #[structopt(short="r", long)]
+    full_random: bool
 }
 
 fn main() {
@@ -49,7 +57,17 @@ fn main() {
     let (_stream, stream_handle) = OutputStream::try_default().unwrap();
     let sink = Sink::try_new(&stream_handle).unwrap();
 
-    println!("Scale: {} {} {}", opt.base_note, opt.scale, Key::new(opt.scale, opt.base_note, opt.octaves));
+    let scale: Scale;
+    let base_note: PianoKey;
+    if opt.full_random {
+        scale = get_random_scale();
+        base_note = get_random_base_note()
+    } else {
+        scale = opt.scale;
+        base_note = opt.base_note;
+    }
+
+    println!("Scale: {} {} {}", base_note, scale, Key::new(opt.scale, opt.base_note, opt.octaves));
 
     if opt.chord_mode {
         let time_signature = TimeSignature::default();

@@ -39,6 +39,7 @@ pub fn rhythm_pattern_rand_generation(time_signature: TimeSignature) -> Vec<Note
     let mut seed = SmallRng::from_entropy();
 
     // Put the same value multiple time to weight the RNG
+    // Find a way to randomize the weights
     let note_values: Vec<NoteValue> = vec![
         NoteValue{base: NoteValueBase::Whole, dotted: None},
         NoteValue{base: NoteValueBase::Half, dotted: None},
