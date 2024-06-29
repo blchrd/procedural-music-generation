@@ -1,4 +1,6 @@
 /target
 /Cargo.lock
 /output/*.wav
+/output/*.mp3
+/output/*.ogg
 /.vscode
