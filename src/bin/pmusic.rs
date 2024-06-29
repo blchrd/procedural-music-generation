@@ -32,6 +32,7 @@ struct Opt {
     /// Instead of playing the track, output the result in ./output/output.wav
     #[structopt(short, long)]
     file_out: bool,
+    /// WARNING: this flag can produce some very high pitch sound
     #[structopt(short, long)]
     instrument_debug: bool,
     /// Will pick a rhythm in a short list of common rhythm pattern

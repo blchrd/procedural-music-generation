@@ -12,6 +12,11 @@ To use it, you'll need to install the Rust toolchains by following the instructi
 cargo run -- -h
 ```
 
+If you just want to give it a try, you can use the following command
+```bash
+cargo run --release -- -c -r -d 120 -o 2
+```
+
 ## Future feature
 
 Here are the future feature I want to (or try to) implement:
