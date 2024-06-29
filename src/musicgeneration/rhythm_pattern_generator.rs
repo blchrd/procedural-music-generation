@@ -4,6 +4,10 @@ use crate::musictheory::{
     time_signature::TimeSignature
 };
 
+//TODO: Make the rhythm generation more random than now
+//  Split the signature, and use the same note value in each (or just randomize it completely)
+//  Keep the common pattern choice in it.
+
 pub fn rhythm_pattern_generation_for_chord(time_signature: TimeSignature) -> Vec<NoteValue> {
     use NoteValueBase::{Whole, Half, Quarter};
     use NoteValueDotted::Dotted;

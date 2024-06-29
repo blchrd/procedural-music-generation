@@ -9,6 +9,11 @@ use crate::musictheory::{
     time_signature::TimeSignature
 };
 
+//TODO: If we're not using the common rhythm pattern, then we have to
+//  narrow down or extend the max_distance between notes;
+//  if we have an eighth, then narrow the distance
+//  but if we have a whole note, we can extend it
+
 use super::rhythm_pattern_generator::rhythm_pattern_generation;
 
 pub fn pattern_generation(name: String, base_note: PianoKey, scale: Scale, octaves: u8, nb_measures: i32) -> Pattern {
