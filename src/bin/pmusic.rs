@@ -61,7 +61,9 @@ fn main() {
             rhythm_pattern.clone(),
             opt.tempo,
             opt.instrument_debug,
-        ).set_adsr_envelop(AdsrEnvelop::new(0.1, 0.2, 4.0, 1.0));
+        )
+        //.set_adsr_envelop(AdsrEnvelop::new(0.1, 0.2, 4.0, 1.0));
+        .set_adsr_envelop(AdsrEnvelop::default());
 
         nb_measures = chord_progression.clone().chords.len();
         println!("Chord progression: {}", chord_progression);
@@ -79,8 +81,8 @@ fn main() {
         ), 
         opt.tempo, 
         opt.instrument_debug)
-                .set_adsr_envelop(AdsrEnvelop::new(0.1, 0.2, 1.5, 0.4));
-                // .set_adsr_envelop(AdsrEnvelop::default());
+                // .set_adsr_envelop(AdsrEnvelop::new(0.1, 0.2, 1.5, 0.4));
+                .set_adsr_envelop(AdsrEnvelop::default());
     println!("{}", music);
     if opt.file_out {
         let filepath = "./output/output.wav";
