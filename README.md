@@ -15,11 +15,10 @@ cargo run -- -h
 ## Future feature
 
 Here are the future feature I want to (or try to) implement:
-- [ ] Merge the chord progression into pattern
-- [ ] Sound envelopes ([short post about it](https://www.teachmeaudio.com/recording/sound-reproduction/sound-envelopes))
-- [ ] Seed the RNG
 - [ ] Silence
-- [ ] Syncopation
-- [ ] Tempo modulation
 - [ ] Create custom chord
+- [ ] Seed the RNG
+- [ ] Syncopation (probably a different ADSR envelop for this one)
+- [ ] Merge the chord progression into pattern
+- [ ] Tempo modulation
 - [ ] Check [this repository](https://github.com/andyherbert/ansiterm/tree/main/basic_waves/src) to implement different wave form.
