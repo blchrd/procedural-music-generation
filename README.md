@@ -19,6 +19,6 @@ cargo run --release -- -c -r -d 120 -o 2
 
 ## Future feature
 
-No GUI is planned right now, but if you want to build one because CLI isn your thing, please do!
+No GUI is planned right now, but if you want to build one because CLI isn't your thing, please do!
 
 You can find the TODO file [here](TODO.md)
