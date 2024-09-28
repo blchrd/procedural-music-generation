@@ -1,6 +1,7 @@
 - [ ] Make note transition smoother
 - [ ] Silence
-- [ ] Create custom chord and chord progression
+- [ ] Create custom chord (randomize chords) 
+- [x] Randomize chord progression
 - [ ] Seed the RNG
 - [ ] Syncopation (probably a different ADSR envelop for this one)
 - [ ] Merge the chord progression into pattern

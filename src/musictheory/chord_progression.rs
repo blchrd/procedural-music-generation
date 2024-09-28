@@ -48,11 +48,29 @@ impl ChordProgression {
             if last_char == '°' {
                 chord_type_str = String::from("dim");
                 chord_degree = chord_degree.replace('°', "");
+            } else if last_char == 'ø' {
+                chord_type_str = String::from("hdim7");
+                chord_degree = chord_degree.replace('ø', "")
+            } else if last_char == '↑' {
+                chord_type_str = String::from("aug");
+                chord_degree = chord_degree.replace('↑', "")
+            } else if last_char == 'p' {
+                chord_type_str = String::from("pow");
+                chord_degree = chord_degree.replace('p', "")
             } else if last_char.is_digit(10) {
                 if second_last_char.is_some() {
                     if second_last_char.unwrap() == '°' {
                         chord_type_str = String::from("dim");
                         chord_degree = chord_degree.replace('°', "");
+                    } else if second_last_char.unwrap() == 'ø' {
+                        chord_type_str = String::from("hdim7");
+                        chord_degree = chord_degree.replace('ø', "")
+                    } else if second_last_char.unwrap() == '↑' {
+                        chord_type_str = String::from("aug");
+                        chord_degree = chord_degree.replace('↑', "")
+                    } else if second_last_char.unwrap() == 'p' {
+                        chord_type_str = String::from("pow");
+                        chord_degree = chord_degree.replace('p', "")
                     }
                 }
                 

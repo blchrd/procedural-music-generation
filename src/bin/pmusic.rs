@@ -38,6 +38,9 @@ struct Opt {
     /// Will pick a rhythm in a short list of common rhythm pattern
     #[structopt(short, long)]
     use_common_pattern: bool,
+    /// Completely randomize the chord progression
+    #[structopt(short="w", long)]
+    random_chord_progression: bool,
     /// Randomize scale and base note (on the fourth octave)
     #[structopt(short="r", long)]
     full_random: bool
@@ -77,7 +80,7 @@ fn main() {
         let chord_progression = ChordProgression::from_scale_and_str(
             opt.scale,
             chord_base_note,
-            &chord_progression_generation(opt.scale, time_signature.clone())
+            &chord_progression_generation(opt.scale, time_signature.clone(), opt.random_chord_progression)
         );
         let rhythm_pattern = rhythm_pattern_generation_for_chord(time_signature.clone());
         let chords = ChordMusicMaker::new(

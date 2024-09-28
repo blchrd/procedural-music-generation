@@ -1,11 +1,18 @@
 use crate::musictheory::{mode::{Mode, PentatonicMode}, scale::Scale, time_signature::TimeSignature};
 use rand::{rngs::SmallRng, seq::IteratorRandom, SeedableRng};
 
-pub fn chord_progression_generation(scale: Scale, _time_signature: TimeSignature) -> String {
+pub fn chord_progression_generation(scale: Scale, _time_signature: TimeSignature, full_random: bool) -> String {
     let mut seed = SmallRng::from_entropy();
 
-    // TODO: Check chord progression for pentatonic scale
-    // TODO: Add test to validate the correct chord progression for each scale
+    let chords = vec![
+        "I","I","i","i","i°","I↑","Ip3",
+        "II","II","ii","ii","ii°","II↑","IIp3",
+        "III","III","iii","iii","iii°","III↑","IIIp3",
+        "IV","IV","iv","iv","IV°","IV↑","IVp3",
+        "V","V","v","v","v°","V↑","Vp3",
+        "VI","VI","vi","vi","vi°","VI↑","VIp3",
+        "VII","VII","vii","vii","vii°","VII↑","VIIp3",
+    ];
     let chord_progressions = match scale {
         Scale::Chromatic => vec!["I"],
         Scale::Tetratonic => vec!["I"],
@@ -111,5 +118,15 @@ pub fn chord_progression_generation(scale: Scale, _time_signature: TimeSignature
         },
     };
     
-    chord_progressions.iter().choose(&mut seed).unwrap().to_string()
+    if !full_random {
+        chord_progressions.iter().choose(&mut seed).unwrap().to_string()
+    } else {
+        let mut chord_progression: Vec<&str> = vec![];
+        let nb_chord = (2..8).into_iter().choose(&mut seed).unwrap();
+        for _i in 0..nb_chord {
+            chord_progression.push(chords.iter().choose(&mut seed).unwrap());
+        }
+
+        chord_progression.join("-")
+    }
 }
