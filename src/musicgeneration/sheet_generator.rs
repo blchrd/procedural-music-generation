@@ -1,4 +1,4 @@
-use rand::{rngs::SmallRng, seq::IteratorRandom, SeedableRng};
+use rand::{rngs::SmallRng, seq::IteratorRandom};
 
 use crate::musictheory::{
     pattern::Pattern, 
@@ -9,9 +9,8 @@ use crate::musictheory::{
 
 use super::pattern_generator::pattern_generation;
 
-pub fn sheet_generation(base_note: PianoKey, scale: Scale, octaves: u8, nb_measures: i32, use_common_pattern: bool) -> Sheet {
+pub fn sheet_generation(base_note: PianoKey, scale: Scale, octaves: u8, nb_measures: i32, use_common_pattern: bool, mut seed: &mut SmallRng) -> Sheet {
     let mut sheet = Sheet::new();  
-    let mut seed = SmallRng::from_entropy();
     let mut patterns = Vec::<Pattern>::new();
     let nb_pattern = (1..4).into_iter().choose(&mut seed).unwrap();
 
@@ -22,7 +21,8 @@ pub fn sheet_generation(base_note: PianoKey, scale: Scale, octaves: u8, nb_measu
             scale, 
             octaves, 
             nb_measures, 
-            use_common_pattern
+            use_common_pattern,
+            &mut seed
         ))
     }
 

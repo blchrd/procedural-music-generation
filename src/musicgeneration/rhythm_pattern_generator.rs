@@ -1,4 +1,4 @@
-use rand::{rngs::SmallRng, seq::IteratorRandom, SeedableRng};
+use rand::{rngs::SmallRng, seq::IteratorRandom};
 use crate::musictheory::{
     note_value::{NoteValue, NoteValueBase, NoteValueDotted}, 
     time_signature::TimeSignature
@@ -6,15 +6,13 @@ use crate::musictheory::{
 
 //TODO: Split the signature, and use the same note value in each (or just randomize it completely)
 
-pub fn rhythm_pattern_generation_for_chord(time_signature: TimeSignature) -> Vec<NoteValue> {
+pub fn rhythm_pattern_generation_for_chord(time_signature: TimeSignature, mut seed: &mut SmallRng) -> Vec<NoteValue> {
     use NoteValueBase::{Whole, Half, Quarter};
     use NoteValueDotted::Dotted;
     let _whole_note = NoteValue{base: Whole, dotted: None};
     let _half_note = NoteValue{base: Half, dotted: None};
     let _half_note_dotted = NoteValue{base: Half, dotted: Some(Dotted)};
     let _quarter_note = NoteValue{base: Quarter, dotted: None};
-
-    let mut seed = SmallRng::from_entropy();
 
     let patterns_4_4 = vec![
         vec![_whole_note],
@@ -35,9 +33,7 @@ pub fn rhythm_pattern_generation_for_chord(time_signature: TimeSignature) -> Vec
     vec![]
 }
 
-pub fn rhythm_pattern_rand_generation(time_signature: TimeSignature) -> Vec<NoteValue> {
-    let mut seed = SmallRng::from_entropy();
-
+pub fn rhythm_pattern_rand_generation(time_signature: TimeSignature, mut seed: &mut SmallRng) -> Vec<NoteValue> {
     // Put the same value multiple time to weight the RNG
     // Find a way to randomize the weights
     let note_values: Vec<NoteValue> = vec![
@@ -81,14 +77,12 @@ pub fn rhythm_pattern_rand_generation(time_signature: TimeSignature) -> Vec<Note
     rhythm_pattern
 }
 
-pub fn rhythm_pattern_generation(time_signature: TimeSignature) -> Vec<NoteValue> {
+pub fn rhythm_pattern_generation(time_signature: TimeSignature, mut seed: &mut SmallRng) -> Vec<NoteValue> {
     use NoteValueBase::{Quarter, Eighth};
     use NoteValueDotted::Dotted;
     let quarter_note = NoteValue{base: Quarter, dotted: None};
     let dotted_quarter_note = NoteValue{base: Quarter, dotted: Some(Dotted)};
     let eighth_note = NoteValue{base: Eighth, dotted: None};
-
-    let mut seed = SmallRng::from_entropy();
 
     let common_pattern_4_4 = vec![
         vec![quarter_note, quarter_note, quarter_note, eighth_note, eighth_note],

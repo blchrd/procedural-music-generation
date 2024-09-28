@@ -1,12 +1,10 @@
 use std::str::FromStr;
 
-use rand::{rngs::SmallRng, seq::IteratorRandom, SeedableRng};
+use rand::{rngs::SmallRng, seq::IteratorRandom};
 
 use crate::musictheory::{piano_key::PianoKey, scale::Scale};
 
-pub fn get_random_scale() -> Scale {
-    let mut seed = SmallRng::from_entropy();
-    
+pub fn get_random_scale(mut seed: &mut SmallRng) -> Scale {  
     let scales = vec![
         Scale::from_str("IONIAN").unwrap(),
         Scale::from_str("DORIAN").unwrap(),
@@ -27,9 +25,7 @@ pub fn get_random_scale() -> Scale {
     scales.iter().choose(&mut seed).unwrap().clone()
 }
 
-pub fn get_random_base_note() -> PianoKey {
-    let mut seed = SmallRng::from_entropy();
-
+pub fn get_random_base_note(mut seed: &mut SmallRng) -> PianoKey {
     let notes = vec![
         PianoKey::from_str("A4").unwrap(),
         PianoKey::from_str("A#4").unwrap(),

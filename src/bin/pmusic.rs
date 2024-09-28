@@ -11,6 +11,7 @@ use pmusic::{
     musictheory::{chord_progression::ChordProgression, key::Key, piano_key::PianoKey, scale::Scale, time_signature::TimeSignature}, signal::adsr_envelop::AdsrEnvelop
 };
 use rodio::{dynamic_mixer, OutputStream, Sink, Source};
+use rand::{rngs::SmallRng, RngCore, SeedableRng};
 use structopt::StructOpt;
 
 #[derive(StructOpt, Debug)]
@@ -43,12 +44,24 @@ struct Opt {
     random_chord_progression: bool,
     /// Randomize scale and base note (on the fourth octave)
     #[structopt(short="r", long)]
-    full_random: bool
+    full_random: bool,
+    /// Seed for random generation
+    #[structopt(long, default_value = "0")]
+    seed: u64,
 }
 
 fn main() {
     let now = Instant::now();
     let opt = Opt::from_args();
+    let seed: u64;
+    if opt.seed == 0 {
+        let mut seed_gen = SmallRng::from_entropy();
+        seed = seed_gen.next_u64();
+    } else {
+        seed = opt.seed;
+    }
+    
+    let mut rng_seed = SmallRng::seed_from_u64(seed);
     let amplify_value;
     if opt.instrument_debug {
         amplify_value = 0.1;
@@ -64,15 +77,15 @@ fn main() {
     let scale: Scale;
     let base_note: PianoKey;
     if opt.full_random {
-        scale = get_random_scale();
-        base_note = get_random_base_note()
+        scale = get_random_scale(&mut rng_seed);
+        base_note = get_random_base_note(&mut rng_seed)
     } else {
         scale = opt.scale;
         base_note = opt.base_note;
     }
 
+    println!("Seed: {}", seed);
     println!("Scale: {} {} {}", base_note, scale, Key::new(opt.scale, opt.base_note, opt.octaves));
-
     if opt.chord_mode {
         let time_signature = TimeSignature::default();
         let mut chord_base_note = opt.base_note;
@@ -80,9 +93,9 @@ fn main() {
         let chord_progression = ChordProgression::from_scale_and_str(
             opt.scale,
             chord_base_note,
-            &chord_progression_generation(opt.scale, time_signature.clone(), opt.random_chord_progression)
+            &chord_progression_generation(opt.scale, time_signature.clone(), opt.random_chord_progression, &mut rng_seed)
         );
-        let rhythm_pattern = rhythm_pattern_generation_for_chord(time_signature.clone());
+        let rhythm_pattern = rhythm_pattern_generation_for_chord(time_signature.clone(), &mut rng_seed);
         let chords = ChordMusicMaker::new(
             chord_progression.clone(),
             rhythm_pattern.clone(),
@@ -105,7 +118,8 @@ fn main() {
             opt.scale, 
             opt.octaves, 
             nb_measures as i32,
-            opt.use_common_pattern
+            opt.use_common_pattern,
+            &mut rng_seed
         ), 
         opt.tempo, 
         opt.instrument_debug)

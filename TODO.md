@@ -2,7 +2,7 @@
 - [ ] Silence
 - [ ] Create custom chord (randomize chords) 
 - [x] Randomize chord progression
-- [ ] Seed the RNG
+- [x] Seed the RNG
 - [ ] Syncopation (probably a different ADSR envelop for this one)
 - [ ] Merge the chord progression into pattern
 - [ ] Tempo modulation

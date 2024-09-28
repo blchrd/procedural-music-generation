@@ -1,9 +1,7 @@
 use crate::musictheory::{mode::{Mode, PentatonicMode}, scale::Scale, time_signature::TimeSignature};
-use rand::{rngs::SmallRng, seq::IteratorRandom, SeedableRng};
+use rand::{rngs::SmallRng, seq::IteratorRandom};
 
-pub fn chord_progression_generation(scale: Scale, _time_signature: TimeSignature, full_random: bool) -> String {
-    let mut seed = SmallRng::from_entropy();
-
+pub fn chord_progression_generation(scale: Scale, _time_signature: TimeSignature, full_random: bool, mut seed: &mut SmallRng) -> String {
     let chords = vec![
         "I","I","i","i","i°","I↑","Ip3",
         "II","II","ii","ii","ii°","II↑","IIp3",
