@@ -94,7 +94,7 @@ impl Iterator for ChordMusicMaker {
         let mut value = 0.0_f32;
         let mut sin = 0.0_f32;
         
-        self.chord_progression.chords[self.current_chord].get_keys().iter().for_each(|n| {
+        self.chord_progression.chords[self.current_chord].clone().get_keys().iter().for_each(|n| {
             let frequency = f64_to_f32(Pitch::from(*n).into());
 
             value += self.volume

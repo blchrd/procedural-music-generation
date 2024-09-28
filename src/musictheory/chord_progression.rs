@@ -85,7 +85,7 @@ impl ChordProgression {
             let base_note = notes[degree - 1];
 
             //4. construct the chord (for now, we just use major and minor triad (or diminished for the seventh degrees))
-            ret.chords.push(Chord{base_note, chord_type: ChordType::from_str(&chord_type_str).unwrap(), inversion: Root});
+            ret.chords.push(Chord{base_note, chord_type: ChordType::from_str(&chord_type_str).unwrap(), inversion: Root, intervals: None});
         });
         ret
     }

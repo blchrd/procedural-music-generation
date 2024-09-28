@@ -19,6 +19,7 @@ pub enum ChordType {
     HalfDiminishedSeventh,
     PowerDiad,
     PowerTriad,
+    CustomChord,
 }
 
 impl ChordType {
@@ -39,6 +40,7 @@ impl ChordType {
             Self::HalfDiminishedSeventh => vec![Min3, Tritone, Min7],
             Self::PowerDiad => vec![Perfect5],
             Self::PowerTriad => vec![Perfect5, Octave],
+            Self::CustomChord => vec![],
         }
     }
 }
@@ -90,7 +92,8 @@ impl fmt::Display for ChordType {
             Self::DiminishedSeventh => s = "dim7",
             Self::HalfDiminishedSeventh => s = "hdim7",
             Self::PowerDiad => s = "pow2",
-            Self::PowerTriad =>s = "pow3" ,
+            Self::PowerTriad => s = "pow3" ,
+            Self::CustomChord => s = "custom"
         }
         
         write!(f, "{}", s)
@@ -111,10 +114,11 @@ impl Default for ChordInversion {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Chord {
     pub base_note: PianoKey,
     pub chord_type: ChordType,
+    pub intervals: Option<Vec<Interval>>,
     pub inversion: ChordInversion,
 }
 
@@ -123,6 +127,7 @@ impl Default for Chord {
         Self {
             base_note: PianoKey::default(),
             chord_type: ChordType::default(),
+            intervals: None,
             inversion: ChordInversion::default(),
         }
     }
@@ -133,8 +138,14 @@ impl Chord {
         Self {
             base_note,
             chord_type,
+            intervals: None,
             inversion,
         }
+    }
+
+    pub fn set_intervals(mut self, intervals: Vec<Interval>) -> Self {
+        self.intervals = Some(intervals);
+        self
     }
 
     pub fn get_keys_string(self) -> String {
@@ -150,9 +161,15 @@ impl Chord {
     pub fn get_keys(self) -> Vec<PianoKey> {
         let mut ret = Vec::new();
         ret.push(self.base_note);
-        self.chord_type.get_intervals().iter().for_each(|i| {
-            ret.push(self.base_note + *i);
-        });
+        if self.chord_type == ChordType::CustomChord && self.intervals.is_some() {
+            self.intervals.unwrap().iter().for_each(|i| {
+                ret.push(self.base_note + *i);
+            });
+        } else {
+            self.chord_type.get_intervals().iter().for_each(|i| {
+                ret.push(self.base_note + *i);
+            });
+        }
 
         ret.rotate_left(self.inversion as usize);
         // Check if the notes' octave is correct

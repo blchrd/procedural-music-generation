@@ -378,6 +378,31 @@ fn test_e3_power_triad() {
 }
 
 #[test]
+fn test_custom_chord() {
+    use ChordType::CustomChord;
+    use ChordInversion::Root;
+    use Interval::{Min2,Maj3};
+
+    let chord = Chord::new(CustomChord,PianoKey::from_str("A4").unwrap(), Root).set_intervals(vec![Min2, Maj3]);
+    assert_eq!(
+        &chord.get_keys_string(),
+        "| A4 A#4 C#5 |"
+    )
+}
+
+#[test]
+#[should_panic]
+fn test_custom_chord_without_interval() {
+    use ChordType::CustomChord;
+    use ChordInversion::Root;
+    let chord = Chord::new(CustomChord,PianoKey::from_str("A4").unwrap(), Root);
+    assert_eq!(
+        &chord.get_keys_string(),
+        "| A4 A#4 C#5 |"
+    )
+}
+
+#[test]
 fn test_add_interval_to_piano_key() {
     use Interval::{Min2, Min3, Maj3, Octave};
     let sp = PianoKey::from_str("B3").unwrap();
