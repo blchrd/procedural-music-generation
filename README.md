@@ -19,11 +19,4 @@ cargo run --release -- -c -r -d 120 -o 2
 
 ## Future feature
 
-Here are the future feature I want to (or try to) implement:
-- [ ] Silence1
-- [ ] Create custom chord and chord progression
-- [ ] Seed the RNG
-- [ ] Syncopation (probably a different ADSR envelop for this one)
-- [ ] Merge the chord progression into pattern
-- [ ] Tempo modulation
-- [ ] Check [this repository](https://github.com/andyherbert/ansiterm/tree/main/basic_waves/src) to implement different wave form, kind of kickstart the implementation of different instruments. I have authorization to use part of the code.
+You can find the TODO file [here](TODO.md)
