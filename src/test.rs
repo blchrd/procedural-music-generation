@@ -534,9 +534,10 @@ fn test_measure_is_complete() {
 
 #[test]
 fn test_rand_pattern_generation() {
+    let mut seed_gen = <rand::rngs::SmallRng as rand::SeedableRng>::from_entropy();
     use rhythm_pattern_generator::rhythm_pattern_rand_generation;
 
-    let rhythm_pattern = rhythm_pattern_rand_generation(TimeSignature::default());
+    let rhythm_pattern = rhythm_pattern_rand_generation(TimeSignature::default(), &mut seed_gen);
     assert_eq!(
         rhythm_pattern.iter().fold(0.0, |sum, nv| sum + nv.get_relative_duration()), 
         f32::from(TimeSignature::default())

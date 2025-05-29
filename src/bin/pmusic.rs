@@ -1,11 +1,8 @@
-use std::time::{Duration, Instant};
+use std::{io::Error, time::{Duration, Instant}};
 
 use pmusic::{
     musicgeneration::{
-        random_scale::{get_random_base_note, get_random_scale},
-        chord_progression_generator::chord_progression_generation, 
-        rhythm_pattern_generator::rhythm_pattern_generation_for_chord, 
-        sheet_generator::sheet_generation
+        chord_progression_generator::chord_progression_generation, random_scale::{get_random_base_note, get_random_scale}, rhythm_pattern_generator::rhythm_pattern_generation_for_chord, sheet_from_binary::sheet_from_binary_file, sheet_generator::sheet_generation
     }, 
     musicsource::{chord_music_maker::ChordMusicMaker, sheet_music_maker::SheetMusicMaker}, 
     musictheory::{chord_progression::ChordProgression, key::Key, piano_key::PianoKey, scale::Scale, time_signature::TimeSignature}, signal::adsr_envelop::AdsrEnvelop
@@ -48,11 +45,54 @@ struct Opt {
     /// Seed for random generation
     #[structopt(long, default_value = "0")]
     seed: u64,
+    /// Source binary file to generate the sheet (will ignore all other generation arguments)
+    #[structopt(short="i",long, default_value = "")]
+    file_in: String,
+    /// Parse the file half a byte at a time to generate the sheet (only with source binary file)
+    #[structopt(short="h", long)]
+    half_byte_parsing: bool,
 }
 
-fn main() {
+fn main() -> Result<(), Error> {
     let now = Instant::now();
     let opt = Opt::from_args();
+    
+    if opt.file_in != "" {
+        let sheet = sheet_from_binary_file::<Error>(
+            opt.base_note, 
+            &opt.file_in,
+            opt.half_byte_parsing,
+        )?;
+        let music = SheetMusicMaker::new(
+        sheet, 
+        opt.tempo, 
+        opt.instrument_debug)
+                // .set_adsr_envelop(AdsrEnvelop::new(0.1, 0.2, 1.5, 0.4));
+                .set_adsr_envelop(AdsrEnvelop::default());
+        let amplify_value = 0.2;
+        let (controller, mixer) = dynamic_mixer::mixer::<f32>(2, 44_100);
+        let (_stream, stream_handle) = OutputStream::try_default().unwrap();
+        let sink = Sink::try_new(&stream_handle).unwrap();
+        if opt.file_out {
+            let filepath = "./output/output.wav";
+            println!("Export to {}", filepath);
+            controller.add(music.take_duration(Duration::from_secs(opt.duration)).amplify(amplify_value));
+            let head = wav_io::new_stereo_header();
+            let mut file_out = std::fs::File::create(filepath).unwrap();
+            wav_io::write_to_file(&mut file_out, &head, &mixer.convert_samples().into_iter().collect::<Vec<f32>>()).unwrap();
+
+            // "benchmark"
+            let elapsed_time = now.elapsed();
+            println!("Execution took {} seconds.", elapsed_time.as_secs());
+        } else {
+            controller.add(music.take_duration(Duration::from_secs(opt.duration)).amplify(amplify_value));
+            sink.append(mixer);
+            sink.sleep_until_end();
+        }
+        return Ok(())
+    }
+    
+    // If using a source binary file, following code is never executed
     let seed: u64;
     if opt.seed == 0 {
         let mut seed_gen = SmallRng::from_entropy();
@@ -141,5 +181,7 @@ fn main() {
         controller.add(music.take_duration(Duration::from_secs(opt.duration)).amplify(amplify_value));
         sink.append(mixer);
         sink.sleep_until_end();
-    }    
+    }
+
+    Ok(())
 }
