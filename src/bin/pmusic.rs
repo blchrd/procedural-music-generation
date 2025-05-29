@@ -45,7 +45,7 @@ struct Opt {
     /// Seed for random generation
     #[structopt(long, default_value = "0")]
     seed: u64,
-    /// Source binary file to generate the sheet (will ignore all other generation arguments)
+    /// Source binary file to generate the sheet. It will ignore all other melody generation arguments, chord is unaffected
     #[structopt(short="i",long, default_value = "")]
     file_in: String,
     /// Parse the file half a byte at a time to generate the sheet (only with source binary file)
@@ -57,42 +57,6 @@ fn main() -> Result<(), Error> {
     let now = Instant::now();
     let opt = Opt::from_args();
     
-    if opt.file_in != "" {
-        let sheet = sheet_from_binary_file::<Error>(
-            opt.base_note, 
-            &opt.file_in,
-            opt.half_byte_parsing,
-        )?;
-        let music = SheetMusicMaker::new(
-        sheet, 
-        opt.tempo, 
-        opt.instrument_debug)
-                // .set_adsr_envelop(AdsrEnvelop::new(0.1, 0.2, 1.5, 0.4));
-                .set_adsr_envelop(AdsrEnvelop::default());
-        let amplify_value = 0.2;
-        let (controller, mixer) = dynamic_mixer::mixer::<f32>(2, 44_100);
-        let (_stream, stream_handle) = OutputStream::try_default().unwrap();
-        let sink = Sink::try_new(&stream_handle).unwrap();
-        if opt.file_out {
-            let filepath = "./output/output.wav";
-            println!("Export to {}", filepath);
-            controller.add(music.take_duration(Duration::from_secs(opt.duration)).amplify(amplify_value));
-            let head = wav_io::new_stereo_header();
-            let mut file_out = std::fs::File::create(filepath).unwrap();
-            wav_io::write_to_file(&mut file_out, &head, &mixer.convert_samples().into_iter().collect::<Vec<f32>>()).unwrap();
-
-            // "benchmark"
-            let elapsed_time = now.elapsed();
-            println!("Execution took {} seconds.", elapsed_time.as_secs());
-        } else {
-            controller.add(music.take_duration(Duration::from_secs(opt.duration)).amplify(amplify_value));
-            sink.append(mixer);
-            sink.sleep_until_end();
-        }
-        return Ok(())
-    }
-    
-    // If using a source binary file, following code is never executed
     let seed: u64;
     if opt.seed == 0 {
         let mut seed_gen = SmallRng::from_entropy();
@@ -125,7 +89,9 @@ fn main() -> Result<(), Error> {
     }
 
     println!("Seed: {}", seed);
-    println!("Scale: {} {} {}", base_note, scale, Key::new(opt.scale, opt.base_note, opt.octaves));
+    if opt.file_in == "" {
+        println!("Scale: {} {} {}", base_note, scale, Key::new(opt.scale, opt.base_note, opt.octaves));
+    }
     if opt.chord_mode {
         let time_signature = TimeSignature::default();
         let mut chord_base_note = opt.base_note;
@@ -152,15 +118,25 @@ fn main() -> Result<(), Error> {
         controller.add(chords.take_duration(Duration::from_secs(opt.duration)).amplify(amplify_value - 0.05));
     }
 
-    let music = SheetMusicMaker::new(
-        sheet_generation(
+    let sheet;
+    if opt.file_in != "" {
+        sheet = sheet_from_binary_file::<Error>(
+            opt.base_note, 
+            &opt.file_in,
+            opt.half_byte_parsing,
+        )?;
+    } else {
+        sheet = sheet_generation(
             opt.base_note, 
             opt.scale, 
             opt.octaves, 
             nb_measures as i32,
             opt.use_common_pattern,
             &mut rng_seed
-        ), 
+        )
+    }
+    let music = SheetMusicMaker::new(
+        sheet, 
         opt.tempo, 
         opt.instrument_debug)
                 // .set_adsr_envelop(AdsrEnvelop::new(0.1, 0.2, 1.5, 0.4));
